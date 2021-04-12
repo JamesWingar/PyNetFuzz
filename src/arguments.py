@@ -8,13 +8,15 @@ REGEX_IP = "^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4]
 # regular expression for validating a MAC address
 REGEX_MAC = "^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})|([0-9a-fA-F]{4}\\.[0-9a-fA-F]{4}\\.[0-9a-fA-F]{4})$"
 
+import sys
 
 def parse_args(args=None):
     """Build and parse command line positional and optional arguments and returns as a Namespace.
 
     Returns:
         Class: Argparse namespace class with command line arguments.
-    """    
+    """
+
     parser = argparse.ArgumentParser(
         prog='Network Fuzzing',
         usage='\n[Filename] %(prog)s \n\
@@ -53,9 +55,9 @@ def parse_args(args=None):
     parser.add_argument(
         '-hd', '--headers', help='Disable randomised headers (default: Random)', action='store_false')
     parser.add_argument(
-        '-min', '--min_packet', help='Specify minimum packet length (default: Ethertype minimum)', type=validate_positive_int, metavar='')
+        '-min', '--min_packet', help='Specify minimum packet length (default: Ethertype minimum)', type=validate_packet_length_int, metavar='')
     parser.add_argument(
-        '-max', '--max_packet', help='Specify maximum packet length (default: Ethertype maximum)', type=validate_positive_int, metavar='')
+        '-max', '--max_packet', help='Specify maximum packet length (default: Ethertype maximum)', type=validate_packet_length_int, metavar='')
     parser.add_argument(
         '-s', '--seed', help='Specify seed to generate packets (default: Random seed)', type=validate_positive_int, metavar='')
 
@@ -82,7 +84,7 @@ def validate_MAC(string):
     if string.lower() == 'self':
         return string.lower()
 
-    if len(string) > 15 or len(string) < 12 or type(string) != str or not re.search(REGEX_MAC, string):
+    if len(string) > 17 or len(string) < 12 or type(string) != str or not re.search(REGEX_MAC, string):
         raise argparse.ArgumentTypeError(
             'Not a valid MAC address. Required to be in a standard format X:X:X:X:X:X or X-X-X-X-X-X or X.X.X'
         )
@@ -94,16 +96,15 @@ def validate_iprotocol(string):
         raise argparse.ArgumentTypeError(
             'Not a supported internet protocol input. Required to be IPv4, IPv6 or Jumbo'
         )
-
     return const.INTERNET_PROTOCOLS_INFO[string.lower()]['value']
 
 
 def validate_tprotocol(string):
-    if len(string) > 3 or type(string) != str or string.lower() not in TRANSPORT_PROTOCOLS:
+    if len(string) > 3 or type(string) != str or string.lower() not in const.TRANSPORT_PROTOCOLS:
         raise argparse.ArgumentTypeError(
             'Not a supported transport protocol input. Required to be either UDP or TCP'
         )
-    return string.lower()
+    return const.TRANSPORT_PROTOCOLS_INFO[string.lower()]['value']
 
 
 def validate_port(string):
@@ -111,18 +112,18 @@ def validate_port(string):
         value = int(string)
     except:
         raise argparse.ArgumentTypeError(
-            'You must enter an integer for the port input. Required to be between 0 and 65536'
+            'You must enter an integer for the port input. Required to be between 0 and 65535'
         )
     else:
-        if value > 0 and value < MAX_PORT:
+        if value < 1 or value > const.MAX_PORT:
             raise argparse.ArgumentTypeError(
-                'Not a supported transport protocol input. Required to be either UDP or TCP'
+                'You must enter an integer for the port input. Required to be between 0 and 65535'
             )
     return value
 
 
 def validate_cast(string):
-    if type(string) != str or string.lower() not in CAST_TYPES:
+    if type(string) != str or string.lower() not in const.CAST_TYPES:
         raise argparse.ArgumentTypeError(
             'Not a supported cast type input. Required to be either unicast, multicast or broadcast'
         )
@@ -140,5 +141,20 @@ def validate_positive_int(string):
         if value <= 0:
             raise argparse.ArgumentTypeError(
                 'You must enter a positive integer.'
+            )
+    return value
+
+
+def validate_packet_length_int(string):
+    try:
+        value = int(string)
+    except:
+        raise argparse.ArgumentTypeError(
+            'You must enter a positive integer between 48 and 9000'
+        )
+    else:
+        if value < 48 or value > 9000:
+            raise argparse.ArgumentTypeError(
+                'You must enter a positive integer between 48 and 9000'
             )
     return value
