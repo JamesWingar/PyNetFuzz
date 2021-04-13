@@ -20,8 +20,8 @@ def parse_args(args=None):
     parser = argparse.ArgumentParser(
         prog='Network Fuzzing',
         usage='\n[Filename] %(prog)s \n\
-[Positional arguments] <target IP> <source IP> <Network interface> <N packets> \n\
-[Optional arguments] [t_MAC | s_MAC | vlan | iprotocol | tprotocol | t_port | s_port | cast | headers | min_packet | max_packet | seed]',
+[Positional arguments] <target IP> <Network interface> <N packets> \n\
+[Optional arguments] [source_ip | target_mac | source_mac | target_port | source_port | int_protocol | trans_protocol | cast | headers | vlan | min_packet | max_packet | seed]',
         description='Creates and sends suedo-random network packets as part of a Fuzz Test.',
         epilog='For more detail go to the ReadMe file in main directory.')
     
@@ -29,31 +29,31 @@ def parse_args(args=None):
     parser.add_argument(
         'target_ip', help='IP address of target on network', type=validate_IP)
     parser.add_argument(
-        'source_ip', help='IP address of source on network', type=validate_IP)
-    parser.add_argument(
         'network_interface', help='Name of the interface connected to the local network', type=validate_name)
     parser.add_argument(
         'n_packets', help='Number of packets to be sent', type=validate_positive_int)
     
     # Optional arguments
     parser.add_argument(
-        '-tm', '--t_mac', help='MAC address of target on network [Self / valid MAC address] (default: Random)', type=validate_MAC, metavar='')
+        '-sip', '--source_ip', help='IP address of source on network (default: Random)', type=validate_IP, metavar='')
     parser.add_argument(
-        '-sm', '--s_mac', help='MAC address of source on network [Self / valid MAC address] (default: Random)', type=validate_MAC, metavar='')
+        '-tm', '--target_mac', help='MAC address of target on network [Self / valid MAC address] (default: Random)', type=validate_MAC, metavar='')
     parser.add_argument(
-        '-vl', '--vlan', help='adds vlan tag', action='store_true')
+        '-sm', '--source_mac', help='MAC address of source on network [Self / valid MAC address] (default: Random)', type=validate_MAC, metavar='')
     parser.add_argument(
-        '-ip', '--iprotocol', help='Specify the internet protocol [IPv4 / IPv6] (default: Random)', type=validate_iprotocol, metavar='')
+        '-t_p', '--target_port', help='Port of target on network (default: Random)', type=validate_port, metavar='')
     parser.add_argument(
-        '-tp', '--tprotocol', help='Specify the transport protocol [TCP / UDP] (default: Random)', type=validate_tprotocol, metavar='')
+        '-s_p', '--source_port', help='Port of source on network (default: Random)', type=validate_port, metavar='')
     parser.add_argument(
-        '-t_p', '--t_port', help='Port of target on network (default: Random)', type=validate_port, metavar='')
+        '-ip', '--int_protocol', help='Specify the internet protocol [IPv4 / IPv6] (default: Random)', type=validate_iprotocol, metavar='')
     parser.add_argument(
-        '-s_p', '--s_port', help='Port of source on network (default: Random)', type=validate_port, metavar='')
+        '-tp', '--trans_protocol', help='Specify the transport protocol [TCP / UDP] (default: Random)', type=validate_tprotocol, metavar='')
     parser.add_argument(
         '-c', '--cast', help='Specify cast types [unicast / multicast / broadcast] (default: Random)', type=validate_cast, metavar='')
     parser.add_argument(
         '-hd', '--headers', help='Disable randomised headers (default: Random)', action='store_false')
+    parser.add_argument(
+        '-vl', '--vlan', help='adds vlan tag', action='store_true')
     parser.add_argument(
         '-min', '--min_packet', help='Specify minimum packet length (default: Ethertype minimum)', type=validate_packet_length_int, metavar='')
     parser.add_argument(
