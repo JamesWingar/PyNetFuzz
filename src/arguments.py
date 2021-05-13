@@ -61,7 +61,7 @@ def parse_args(args=None):
     parser.add_argument(
         '-s', '--seed', help='Specify seed to generate packets (default: Random seed)', type=validate_positive_int, metavar='')
 
-    return parser.parse_args(args)
+    return vars(parser.parse_args(args))
 
 
 def validate_IP(string):
