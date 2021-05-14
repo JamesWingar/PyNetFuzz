@@ -25,8 +25,14 @@ class Randomiser():
     def choose(self, choices):
         return choices[random.randint(0, len(choices) - 1)]
 
+    def rand(self, min, max):
+        return random.randint(min, max)
+
     def bit_32(self):
         return random.randint(0, 2147483647)
+
+    def bit_20(self):
+        return random.randint(0,1048575)
 
     def bit_16(self):
         return random.randint(0, 65535)
@@ -36,6 +42,9 @@ class Randomiser():
 
     def bit_8(self):
         return random.randint(0, 255)
+
+    def bit_3(self):
+        return random.randint(0, 7)
 
     def bit_2(self):
         return random.randint(0, 3)
