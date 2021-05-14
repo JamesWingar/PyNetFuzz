@@ -26,18 +26,18 @@ CAST_TYPES_INFO = {
 INTERNET_PROTOCOLS_INFO = {
     'ipv4': {
         'value': 0x800,
-        'min_length': 60,
         'max_length': 1500,
+        'header_length': 20,
     },
     'ipv6': {
         'value': 0x86DD,
-        'min_length': 60,
         'max_length': 1500,
+        'header_length': 40,
     },
     'jumbo': {
         'value': 0x8870,
-        'min_length': 60,
         'max_length': 9000,
+        'header_length': 20,
     }
 }
 
@@ -45,9 +45,11 @@ INTERNET_PROTOCOLS_INFO = {
 TRANSPORT_PROTOCOLS_INFO = {
     'udp': {
         'value': 0x11,
+        'header_length': 8,
     },
     'tcp': {
         'value': 0x06,
+        'header_length': 20,
     }
 }
 
