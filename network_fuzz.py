@@ -4,38 +4,43 @@
 from src.arguments import parse_args
 from src.hosts import Host
 from src.packet import PacketGenerator
+from src import const
 
 def main():
 
      # get args
     args = parse_args()
 
-    print(args)
-
     # Create host objects
     target, source = Host(args['target_ip'], args['target_mac'], args['target_port']), \
         Host(args['source_ip'], args['source_mac'], args['source_port'])
 
-    print(target)
-    print(source)
+    while(1):
+        # Create packet generator object
+        packet_generator = PacketGenerator(args)
 
-    # Test hosts (online)
+        # Test hosts (online)
+        if not target.is_online():
+            #report offline
+            pass
 
-    # Create packet generator object
-    packet_generator = PacketGenerator(args)
+        for number in range(const.PACKETS_PER_SEED):
+            # create new packet
+            packet = packet_generator.create_packet(target, source)
 
-    # Create 
-    for number in range(1):
-        # create new packet
-        packet = packet_generator.create_packet(target, source)
+            # send new packet
+            packet.send(args['network_interface'])
 
-        # send new packet
-
-        # Log output
+            # Log packet
+            #TODO
 
         # confirm target is online
+        if not target.is_online():
+            #report offline
+            pass
 
     # Output results
+    #TODO
 
 if __name__ == "__main__":
     main()
