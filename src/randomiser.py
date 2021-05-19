@@ -6,7 +6,6 @@ class Randomiser():
         self.seed = seed
         random.seed(seed)
         
-    
     def ip(self, ip_str):
         return '.'.join([str(self.bit_8()) if byte == '*' else byte for byte in ip_str.split('.')])
 
@@ -48,3 +47,6 @@ class Randomiser():
 
     def bit_2(self):
         return random.randint(0, 3)
+
+    def __str__(self):
+        return "Randomiser - Seed: ({self.seed})"
