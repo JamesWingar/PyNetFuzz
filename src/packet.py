@@ -1,35 +1,41 @@
-from scapy.all import *
+from scapy.all import sendp, Ether, Dot1Q, IP, UDP, TCP, randstring
+from time import time
 from src.randomiser import Randomiser
 from src.hosts import Host
 from src import const
 
 
 class PacketGenerator():
+    # Class Attribute
     count = 0
-    # Attribute
-
+    
     # initialising
-    def __init__(self, params, seed=int(time.time())):
+    def __init__(self, params):
         self.params = params
-        self.seed = seed
-        self.randomiser = Randomiser(seed)
-        print(f"SEED: {seed}")
+        self.seed = params['seed'] if params['seed'] else int(time())
+        self.randomiser = Randomiser(self.seed)
+        # TODO: LOG seed as Randomiser
+        print(f"SEED: {self.seed}")
 
 
     def create_packet(self, target, source=Host(None, None, None)):
         
         #randomise hosts
         target, source = self.randomise_host(target), self.randomise_host(source)
-        print(target)
-        print(source)
         
         #randomise packet info
         packet_info = self.randomise_params(self.params)
-        print(packet_info)
+        print(f"PACKET INFO: {packet_info}")
 
         #create packet
         packet = Packet(target, source, packet_info)
-        print(packet)
+        packet.add_ethernet_layer()
+        packet.add_ip_layer()
+        packet.add_transport_layer()
+        packet.add_payload_layer()
+        
+        # TODO: LOG Packet sent in concise way
+        print(f"PACKET:\n{packet}")
 
         # increment created packet counter
         self.count += 1
@@ -52,17 +58,28 @@ class PacketGenerator():
         return host
 
 
-    def randomise_params(self, params):
+    def randomise_params(self, params, min_len=0, max_len=None):
+
+        int_str = self.randomiser.choose(const.INTERNET_PROTOCOLS)
+        trans_str = self.randomiser.choose(const.TRANSPORT_PROTOCOLS)
+
         packet_info = {
             'int_protocol': params['int_protocol'] if params['int_protocol'] else \
-                const.INTERNET_PROTOCOLS_INFO[self.randomiser.choose(const.INTERNET_PROTOCOLS)]['value'],
+                const.INTERNET_PROTOCOLS_INFO[int_str]['value'],
             'trans_protocol': params['trans_protocol'] if params['trans_protocol'] else \
-                const.TRANSPORT_PROTOCOLS_INFO[self.randomiser.choose(const.TRANSPORT_PROTOCOLS)]['value'],
+                const.TRANSPORT_PROTOCOLS_INFO[trans_str]['value'],
             'cast': params['cast'] if params['cast'] else \
                 self.randomiser.choose(const.CAST_TYPES),
             'vlan': params['vlan'],
-            'headers': params['headers'],
+            'headers': params['headers']
         }
+
+        if not max_len:
+            max_len = const.INTERNET_PROTOCOLS_INFO[int_str]['max_length'] - \
+                const.INTERNET_PROTOCOLS_INFO[int_str]['header_length'] - \
+                const.TRANSPORT_PROTOCOLS_INFO[trans_str]['header_length']
+
+        packet_info['length'] = self.randomiser.rand(min_len, max_len)
 
         if params['headers']:
             # Randomise IP header
@@ -70,7 +87,7 @@ class PacketGenerator():
                 #ipv6
                 packet_info['ip_header'] = {
                     'tc': self.randomiser.bit_8(), # Traffic class
-                    'fl': self.randomiser.bit_8(), # Flow Label
+                    'fl': self.randomiser.bit_20(), # Flow Label
                     'hlim': self.randomiser.bit_8(), # Identification
                 }
             else:
@@ -78,7 +95,7 @@ class PacketGenerator():
                 packet_info['ip_header'] = {
                     'ttl': self.randomiser.bit_8(), # TTL 
                     'tos': self.randomiser.bit_8(), # DSCP
-                    'flags': self.randomiser.bit_2(), # Flags
+                    'flags': self.randomiser.bit_3(), # Flags
                     'frag': self.randomiser.bit_13(), # Fragmentation offset
                     'id': self.randomiser.bit_16(), # Identification
                 }
@@ -86,10 +103,10 @@ class PacketGenerator():
             # Random TCP header
             if packet_info['trans_protocol'] == const.TRANSPORT_PROTOCOLS_INFO['tcp']['value']:
                 packet_info['tcp_header'] = {
-                    'seq': self.randomiser.bit_32(), # sequence number (32 bit value)
-                    'ack': self.randomiser.bit_32(), # Acknowledgment number (32 bit value)
-                    'window': self.randomiser.bit_16(), # Window size (16 bit value)
-                    'urgptr': self.randomiser.bit_16(), # urgent pointer (16 bit value)
+                    'seq': self.randomiser.bit_32(), # sequence number
+                    'ack': self.randomiser.bit_32(), # Acknowledgment number
+                    'window': self.randomiser.bit_16(), # Window size
+                    'urgptr': self.randomiser.bit_16(), # urgent pointer
                 }
 
         return packet_info
@@ -98,65 +115,65 @@ class PacketGenerator():
         return self.count
 
 
+
 class Packet():
 
     def __init__(self, target, source, info):
+        self.packet = None
         self.target = self.is_valid_host(target)
         self.source = self.is_valid_host(source)
         self.info = self.is_valid_info(info)
-
-    def generate_ethernet_frame(self, info):
-        """ 
-        packet = Ether(src=args['smac'], dst=args['tmac'], type=args['type'])  # creates the packet (ethernet frame)
-        if vlan:
-            packet /= Dot1Q(vlan=vlan)
-        """
-        pass
-
-    def generate_internet_protocol(self, info):
-        """
-        packet /= IP(src=args['sip'], dst=args['tip'])  # creates the packet (ethernet/IPv4)
-        if header:
-            randomise_ip_header(packet)  # randomise header variables
-        """
-        pass
-
-    def generate_ip_header(self, info):
-        """ 
-        if is_ipv6(packet.type):
-        packet.tc, packet.fl, packet.hlim = random.randint(0, 255), random.randint(0, 2**20), random.randint(0, 255)     # Traffic class, Flow Label, Identification
-        elif is_ipv4(packet.type):
-            packet.ttl, packet.tos, packet.flags = random.randint(0, 255), random.randint(0, 255), random.randint(0, 3)  # TTL, DSCP, Flags
-            packet.frag, packet.id = random.randint(0, 8192), random.randint(0, 65536)  # Fragmentation offset, Identification
-        """
-        pass
-
-    def generate_transport_protocol(self, info):
-        """ 
-        if is_udp(args):
-            packet /= UDP(sport=args['sport'], dport=args['tport'])  # create udp layer
-        elif is_tcp(args):
-            packet /= TCP(sport=args['sport'], dport=args['tport'])  # create tcp layer
-            if header:
-                randomise_tcp_header(packet)  # randomise tcp header
-        """
-        pass
-
-    def generate_payload(self, info):
-        """ 
-        if not min:
-            min = ether_length[packet.type][0]
-        if not max:
-            max = ether_length[packet.type][1]
-        payload = randstring(random.randint(min, max - 60))  # minus max IPv6 header and max TCP header (largest)
-        return len(payload), packet / payload
-        """
-        pass
-
-    def send(self):
-        pass
+        for key, value in info.items():
+            setattr(self, key, value)
 
 
+    # CLASS METHODS
+    def add_ethernet_layer(self):
+        self.packet = Ether(src=self.source.mac, dst=self.target.mac, type=self.int_protocol)
+        if self.vlan:
+            self.packet /= Dot1Q(vlan=True)
+        return
+
+
+    def add_ip_layer(self):
+        self.packet /= IP(src=self.source.ip, dst=self.target.ip)
+        if self.headers:
+            for key, value in self.ip_header.items():
+                setattr(self.packet, key, value)
+        return
+
+
+    def add_transport_layer(self):
+        if self.is_udp():
+            self.packet /= UDP(sport=self.source.port, dport=self.target.port)
+        elif self.is_tcp():
+            self.packet /= TCP(sport=self.source.port, dport=self.target.port)
+            if self.headers:
+                for key, value in self.tcp_header.items():
+                    setattr(self.packet, key, value)
+        return
+
+
+    def add_payload_layer(self):
+        self.packet / randstring(self.length)
+        return
+
+
+    def send(self, iface, verbose=False):
+        sendp(self.packet, iface=iface, verbose=verbose)
+        return
+        
+    
+    # BOOLEAN METHODS
+    def is_udp(self):
+        return self.trans_protocol == const.TRANSPORT_PROTOCOLS_INFO['udp']['value']
+
+
+    def is_tcp(self):
+        return self.trans_protocol == const.TRANSPORT_PROTOCOLS_INFO['tcp']['value']
+
+
+    # VALIDATION METHODS
     def is_valid_host(self, host):
         if not isinstance(host, Host):
             raise ValueError("Packet must have Target and Source as Host Class Objects\n Received: {}".format(host))
@@ -168,17 +185,27 @@ class Packet():
 
 
     def is_valid_info(self, info):
-        must_contain = ['int_protocol', 'trans_protocol', 'cast', 'vlan', 'headers', 'ip_header']
-        for key in must_contain:
-            if key not in info:
-                raise KeyError("Packet info dict is missing: {}".format(key))
+        must_contain = ['int_protocol', 'trans_protocol', 'cast', 'length', 'vlan', 'headers']
 
-        if info['trans_protocol'] == const.TRANSPORT_PROTOCOLS_INFO['tcp']['value'] and 'tcp_header' not in info:
-            raise KeyError("Packet info dict is missing: {}".format(key))
+        if info['headers']:
+            must_contain.append('ip_header')
+
+        if info['trans_protocol'] == const.TRANSPORT_PROTOCOLS_INFO['tcp']['value']:
+            must_contain.append('tcp_header')
+
+        if len(must_contain) != len(info):
+            raise KeyError("Packet info received unexpected number of values")
     
+        if set(must_contain) != set(info.keys()):
+            if set(must_contain) - set(info.keys()):
+                raise KeyError("Packet info has missing values: {}".format(set(must_contain) - set(info.keys())))
+            if set(info.keys()) - set(must_contain):
+                raise KeyError("Packet info has incorrect values: {}".format(set(info.keys()) - set(must_contain)))
+        
         return info
 
-
+    
+    # BUILTIN METHODS
     def __str__(self):
         return f"Target:\n{self.target}\nSource:\n{self.source}\nInfo:\n" + \
             "\n".join([f"{key}: {self.info[key]}" for key in self.info])
