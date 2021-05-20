@@ -35,7 +35,7 @@ class PacketGenerator():
         packet.add_payload_layer()
         
         # TODO: LOG Packet sent in concise way
-        print(f"PACKET:\n{packet}")
+        # print(f"PACKET:\n{packet}")
 
         # increment created packet counter
         self.count += 1
@@ -155,11 +155,14 @@ class Packet():
 
 
     def add_payload_layer(self):
+        #print(self.length)
+        #print(randstring(self.length))
         self.packet / randstring(self.length)
         return
 
 
     def send(self, iface, verbose=False):
+        #print(self.packet.show())
         sendp(self.packet, iface=iface, verbose=verbose)
         return
         
@@ -189,9 +192,8 @@ class Packet():
 
         if info['headers']:
             must_contain.append('ip_header')
-
-        if info['trans_protocol'] == const.TRANSPORT_PROTOCOLS_INFO['tcp']['value']:
-            must_contain.append('tcp_header')
+            if info['trans_protocol'] == const.TRANSPORT_PROTOCOLS_INFO['tcp']['value']:
+                must_contain.append('tcp_header')
 
         if len(must_contain) != len(info):
             raise KeyError("Packet info received unexpected number of values")
