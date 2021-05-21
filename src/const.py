@@ -1,5 +1,5 @@
 CAST_TYPES = ('broadcast', 'multicast', 'unicast')
-INTERNET_PROTOCOLS = ('ipv4', 'ipv6', 'jumbo')
+INTERNET_PROTOCOLS = ('ipv4', 'ipv6')#, 'jumbo')
 TRANSPORT_PROTOCOLS = ('tcp', 'udp')
 
 # Cast type values
