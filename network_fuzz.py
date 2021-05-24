@@ -12,12 +12,12 @@ def main():
     args = parse_args()
 
     # Create host objects
-    target, source = Host(args['target_ip'], args['target_mac'], args['target_port']), \
-        Host(args['source_ip'], args['source_mac'], args['source_port'])
+    target, source = Host(args.target_ip, args.target_mac, args.target_port), \
+        Host(args.source_ip, args.source_mac, args.source_port)
 
-    while(PacketGenerator.count < args['n_packets']):
+    while(PacketGenerator.count < args.n_packets):
         # Create packet generator object
-        packet_generator = PacketGenerator(args)
+        packet_generator = PacketGenerator(vars(args))
 
         # Test hosts (online)
         if not target.is_online():
@@ -29,7 +29,7 @@ def main():
             packet = packet_generator.create_packet(target, source)
 
             # send new packet
-            packet.send(args['network_interface'])
+            packet.send(args.network_interface)
 
             # Log packet
             #TODO
