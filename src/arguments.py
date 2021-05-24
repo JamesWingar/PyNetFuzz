@@ -21,7 +21,7 @@ def parse_args(args=None):
     
     # Positional arguments
     parser.add_argument(
-        'target_ip', help='IP address of target on network', type=validate_IP)
+        'target_ip', help='IP address of target on network', type=validate_specific_IP)
     parser.add_argument(
         'network_interface', help='Name of the interface connected to the local network', type=validate_name)
     parser.add_argument(
@@ -29,7 +29,7 @@ def parse_args(args=None):
     
     # Optional arguments
     parser.add_argument(
-        '-sip', '--source_ip', help='IP address of source on network (default: Random)', type=validate_IP, metavar='')
+        '-sip', '--source_ip', help='IP address of source on network (default: Random)', type=validate_scope_IP, metavar='')
     parser.add_argument(
         '-tm', '--target_mac', help='MAC address of target on network [Self / valid MAC address] (default: Random)', type=validate_MAC, metavar='')
     parser.add_argument(
@@ -58,8 +58,16 @@ def parse_args(args=None):
     return parser.parse_args(args)
 
 
-def validate_IP(string):
-    if len(string) > 17 or len(string) < 7 or type(string) != str or not re.search(const.REGEX_IP, string):
+def validate_specific_IP(string):
+    if len(string) > 17 or len(string) < 7 or type(string) != str or not re.search(const.REGEX_SPECIFIC_IP, string):
+        raise argparse.ArgumentTypeError(
+            'Not a valid IP address. Required to be in standard format X.X.X.X'
+        )
+    return string
+
+
+def validate_scope_IP(string):
+    if len(string) > 17 or len(string) < 7 or type(string) != str or not re.search(const.REGEX_SCOPE_IP, string):
         raise argparse.ArgumentTypeError(
             'Not a valid IP address. Required to be in standard format X.X.X.X'
         )
