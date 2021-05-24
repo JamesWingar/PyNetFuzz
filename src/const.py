@@ -57,6 +57,14 @@ TRANSPORT_PROTOCOLS_INFO = {
 MAX_PORT = 65535
 PACKETS_PER_SEED = 100
 
+# Regex expressions
+# Specific IP address
+REGEX_SPECIFIC_IP = "^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$"
+# Scope IP address ('*' indicates netmask)
+REGEX_SCOPE_IP = "^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]|[*])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]|[*])$"
+# MAC address
+REGEX_MAC = "^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})|([0-9a-fA-F]{4}\\.[0-9a-fA-F]{4}\\.[0-9a-fA-F]{4})$"
+
 # Default values
 DEFAULT_IP_ADDRESS = "192.168.1.*"
 DEFAULT_MASK = 24

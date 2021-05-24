@@ -2,12 +2,6 @@ import argparse
 import re
 from src import const
 
-
-# regular expression for validating an IP address
-REGEX_IP = "^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$"
-# regular expression for validating a MAC address
-REGEX_MAC = "^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})|([0-9a-fA-F]{4}\\.[0-9a-fA-F]{4}\\.[0-9a-fA-F]{4})$"
-
 import sys
 
 def parse_args(args=None):
@@ -61,11 +55,11 @@ def parse_args(args=None):
     parser.add_argument(
         '-s', '--seed', help='Specify seed to generate packets (default: Random seed)', type=validate_positive_int, metavar='')
 
-    return vars(parser.parse_args(args))
+    return parser.parse_args(args)
 
 
 def validate_IP(string):
-    if len(string) > 17 or len(string) < 7 or type(string) != str or not re.search(REGEX_IP, string):
+    if len(string) > 17 or len(string) < 7 or type(string) != str or not re.search(const.REGEX_IP, string):
         raise argparse.ArgumentTypeError(
             'Not a valid IP address. Required to be in standard format X.X.X.X'
         )
@@ -84,7 +78,7 @@ def validate_MAC(string):
     if string.lower() == 'self':
         return string.lower()
 
-    if len(string) > 17 or len(string) < 12 or type(string) != str or not re.search(REGEX_MAC, string):
+    if len(string) > 17 or len(string) < 12 or type(string) != str or not re.search(const.REGEX_MAC, string):
         raise argparse.ArgumentTypeError(
             'Not a valid MAC address. Required to be in a standard format X:X:X:X:X:X or X-X-X-X-X-X or X.X.X'
         )
