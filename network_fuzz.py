@@ -15,7 +15,7 @@ def main():
     target, source = Host(args['target_ip'], args['target_mac'], args['target_port']), \
         Host(args['source_ip'], args['source_mac'], args['source_port'])
 
-    while(1):
+    while(PacketGenerator.count < args['n_packets']):
         # Create packet generator object
         packet_generator = PacketGenerator(args)
 
