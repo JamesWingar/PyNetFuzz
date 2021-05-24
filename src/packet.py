@@ -28,11 +28,7 @@ class PacketGenerator():
         print(f"PACKET INFO: {packet_info}")
 
         #create packet
-        packet = Packet(target, source, packet_info)
-        packet.add_ethernet_layer()
-        packet.add_ip_layer()
-        packet.add_transport_layer()
-        packet.add_payload_layer()
+        packet = Packet(target, source, packet_info).add_all_layers()
         
         # TODO: LOG Packet sent in concise way
         print(f"PACKET number {self.count}:\n{packet}")
@@ -156,6 +152,14 @@ class Packet():
 
     def add_payload_layer(self):
         self.packet /= randstring(self.length)
+        return
+
+
+    def add_all_layers(self):
+        self.add_ethernet_layer()
+        self.add_ip_layer()
+        self.add_transport_layer()
+        self.add_payload_layer()
         return
 
 
