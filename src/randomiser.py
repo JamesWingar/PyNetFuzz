@@ -6,7 +6,7 @@ from time import time
 
 class Randomiser():
 
-    def __init__(self, seed: int=int(time())):
+    def __init__(self, seed: int=int(time())) -> None:
         """ Randomiser class built-in initialiser
     
         Parameters:
