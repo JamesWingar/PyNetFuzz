@@ -1,6 +1,18 @@
-CAST_TYPES = ('broadcast', 'multicast', 'unicast')
-INTERNET_PROTOCOLS = ('ipv4', 'ipv6')#, 'jumbo')
-TRANSPORT_PROTOCOLS = ('tcp', 'udp')
+# Supported types (Cast and Protocols)
+CAST_TYPES = (
+    'broadcast',
+    'multicast',
+    'unicast',
+)
+INTERNET_PROTOCOLS = (
+    'ipv4',
+    'ipv6',
+    #'jumbo',
+)
+TRANSPORT_PROTOCOLS = (
+    'tcp',
+    'udp',
+)
 
 # Cast type values
 CAST_TYPES_INFO = {
