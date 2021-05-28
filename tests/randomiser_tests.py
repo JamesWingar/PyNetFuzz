@@ -9,7 +9,7 @@ from src.randomiser import Randomiser
 class TestRandomiser(unittest.TestCase):
 
     def test_init(self):
-        # Correct random seed initialisation
+        # Correct random seed initialisation test
         self.assertEqual(Randomiser(1).seed, 1)
         self.assertEqual(type(Randomiser().seed), int)
         self.assertEqual(Randomiser(1934580).seed, 1934580)
@@ -31,16 +31,17 @@ class TestRandomiser(unittest.TestCase):
 
 
     def test_ip(self):
-        seed = 1
         # Random int (0-255) Sequence: 68 32 130 60 253 230 241 194
+        seed = 1
+
         # Correct random IP generation
-        self.assertEqual(Randomiser(seed).ip('192.168.1.24'), '192.168.1.24')
-        self.assertEqual(Randomiser(seed).ip('192.168.1.*'), '192.168.1.68')
-        self.assertEqual(Randomiser(seed).ip('192.168.*.*'), '192.168.68.32')
-        self.assertEqual(Randomiser(seed).ip('192.*.*.*'), '192.68.32.130')
-        self.assertEqual(Randomiser(seed).ip('*.*.*.*'), '68.32.130.60')
-        self.assertEqual(Randomiser(seed).ip(), '68.32.130.60')
-        self.assertEqual(Randomiser(seed).ip(), Randomiser(seed).ip('*.*.*.*'))
+        self.assertEqual(Randomiser(seed).ip("192.168.1.24"), "192.168.1.24")
+        self.assertEqual(Randomiser(seed).ip("192.168.1.*"), "192.168.1.68")
+        self.assertEqual(Randomiser(seed).ip("192.168.*.*"), "192.168.68.32")
+        self.assertEqual(Randomiser(seed).ip("192.*.*.*"), "192.68.32.130")
+        self.assertEqual(Randomiser(seed).ip("*.*.*.*"), "68.32.130.60")
+        self.assertEqual(Randomiser(seed).ip(), "68.32.130.60")
+        self.assertEqual(Randomiser(seed).ip(), Randomiser(seed).ip("*.*.*.*"))
 
         # Incorrect argument datatype tests
         with self.assertRaises(TypeError) as exception:
@@ -65,37 +66,38 @@ class TestRandomiser(unittest.TestCase):
 
     def test_mac(self):
         seeds = {
-            11: '00:E7:EE:E7:61:5E',
             # Random int (0-255) Sequence (dec): 231 238 231 97 94
             # Random int (0-255) Sequence (hex): E7 EE E7 61 5E
-            21: '00:54:D6:D6:90:F5', 
+            11: "00:E7:EE:E7:61:5E",
             # Random int (0-255) Sequence (dec): 84 214 214 144 245
             # Random int (0-255) Sequence (hex): 54 D6 D6 90 F5
-            31: '00:6:F0:39:C9:48',
+            21: "00:54:D6:D6:90:F5", 
             # Random int (0-255) Sequence (dec): 6 240 57 201 72
             # Random int (0-255) Sequence (hex): 6 F0 39 C9 48
-            41: '00:C3:AA:76:55:C5',
+            31: "00:6:F0:39:C9:48",
             # Random int (0-255) Sequence (dec): 195 170 118 85 197
             # Random int (0-255) Sequence (hex): C3 AA 76 55 C5
-            51: '00:7C:52:7D:76:82',
+            41: "00:C3:AA:76:55:C5",
             # Random int (0-255) Sequence (dec): 124 82 125 118 130
             # Random int (0-255) Sequence (hex): 7C 52 7D 76 82
+            51: "00:7C:52:7D:76:82",
         }
         for seed, result in seeds.items():
             self.assertEqual(Randomiser(seed).mac(), result)
 
 
     def test_boolean(self):
-        seed, results = 61, [True, False, False, True, True]
         # Random int (0-1) Sequence: 1 0 0 1 1
+        seed, results = 61, [True, False, False, True, True]
+
         randomiser = Randomiser(seed)
         for result in results:
             self.assertEqual(randomiser.boolean(), result)
 
 
     def test_type(self):
-        seed = 71
         # Random int (0, length - 1)
+        seed = 71
         randomiser = Randomiser(seed)
         
         # Correct random type generation
@@ -121,13 +123,13 @@ class TestRandomiser(unittest.TestCase):
 
 
     def test_choose(self):
-        seed_1 = 81
         # Random int (0, length - 1) Sequence: 8 7 5 8 8
-        seed_2 = 91
+        seed_1 = 81
         # Random int (0, length - 1) Sequence: 1 9 2 10 10
+        seed_2 = 91
         test_list = [
             1, 2, 3,
-            'Spaghetti', 'Meatballs', 'Lasagne',
+            "Spaghetti", "Meatballs", "Lasagne",
             1.234, 2.345, 3.456,
             False, True, False
         ]
@@ -136,7 +138,7 @@ class TestRandomiser(unittest.TestCase):
         randomiser = Randomiser(seed_1)
         self.assertEqual(randomiser.choose(test_list), 3.456)
         self.assertEqual(randomiser.choose(test_list), 2.345)
-        self.assertEqual(randomiser.choose(test_list), 'Lasagne')
+        self.assertEqual(randomiser.choose(test_list), "Lasagne")
         self.assertEqual(randomiser.choose(test_list), 3.456)
         self.assertEqual(randomiser.choose(test_list), 3.456)
 
@@ -165,8 +167,8 @@ class TestRandomiser(unittest.TestCase):
 
     
     def test_rand(self):
-        seed = 101
         # Random int (min, max)
+        seed = 101
 
         # Correct random value generation
         randomiser = Randomiser(seed)
@@ -198,8 +200,8 @@ class TestRandomiser(unittest.TestCase):
 
 
     def test_bit(self):
-        seed = 111
         # Random int (0, bit)
+        seed = 111
 
         # Correct random choice generation
         randomiser = Randomiser(seed)
