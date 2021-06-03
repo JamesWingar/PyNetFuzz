@@ -9,6 +9,10 @@ class IpAddressInvalidFormatError(BaseValidationError):
     pass
 class IpAddressInvalidValueError(BaseValidationError):
     pass
+class IpAddressTooLongValueError(BaseValidationError):
+    pass
+class IpAddressTooShortValueError(BaseValidationError):
+    pass
 class IpScopeAddressInvalidValueError(BaseValidationError):
     pass
 
@@ -16,6 +20,10 @@ class IpScopeAddressInvalidValueError(BaseValidationError):
 class MacAddressInvalidFormatError(BaseValidationError):
     pass
 class MacAddressInvalidValueError(BaseValidationError):
+    pass
+class MacAddressTooLongValueError(BaseValidationError):
+    pass
+class MacAddressTooShortValueError(BaseValidationError):
     pass
 
 # Port
