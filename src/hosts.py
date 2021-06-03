@@ -1,22 +1,41 @@
-from scapy.all import sr1, IP, ICMP, arping
+from scapy.all import sr1, IP, ICMP, arping, get_if_addr, get_if_hwaddr, getmacbyip
+from src.validation import (
+    valid_scope_IP,
+    valid_mac,
+    valid_port,
+    valid_name,
+)
 
 class Host():
     
-    def __init__(self, ip: str, mac: str, port: str) -> None:
+    def __init__(self, ip: str, mac: str, port: str, interface: str=None) -> None:
         """ Host class built-in initialiser
    
         Parameters:
         ip (str): IP address string
         mac (str): MAC address string
         port (str): Port value string
+        interface (str): Optional argument for local interface name. If intereface
+                         is given the class will get local ip and mac addresses.
     
         Returns:
         str: Randomised IP address string
         """
-        self.ip = ip
-        self.mac = self.get_MAC() if mac == 'self' else mac
-        self.port = port
+        self.port = valid_port(port)
+        self.interface = valid_name(interface)
         self.online = False
+
+        if self.interface:
+            self.ip = self.get_local_ip(self.interface)
+            self.mac = self.get_local_mac(self.interface)
+        else:
+            self.ip = valid_scope_IP(ip)
+            if mac == "self":
+                self.mac = self.get_remote_mac()
+            else:
+                self.mac = valid_mac(mac)
+        
+
 
     def is_online(self) -> bool:
         """ Checks if host is online
@@ -66,20 +85,37 @@ class Host():
             verbose=False
         ) is not None
 
-    def get_MAC(self) -> str:
-        """ Gets host MAC address by ARPing host IP address
+    def get_local_ip(self, iface: str) -> str:
+        """ Gets IP address of local interface
+
+        Parameters:
+        iface (str): Name of the interface
 
         Returns:
-        str: Returns MAC address string if ARPing is successful
+        str: Uppercase string of the interface IP address
+             (Returns '0.0.0.0' upon failure)
         """
-        if not self.is_ip():
-            raise ValueError("Can not get MAC address of a host without an IP address.")
+        return get_if_addr(iface).upper()
+
+    def get_local_mac(self, iface: str) -> str:
+        """ Gets MAC address of local interface
         
-        ans, unans = arping(self.ip, verbose=False)
-        for (sent, receive) in ans:
-            if receive.psrc == self.ip:
-                return receive.src
-        return None
+        Parameters:
+        iface (str): Name of the interface
+
+        Returns:
+        str: Uppercase string of the local interface MAC address
+        """
+        print(iface)
+        return get_if_hwaddr(iface).upper()
+
+    def get_remote_mac(self):
+        """ Gets MAC address of a remote interface. Uses IP address of the class.
+        
+        Returns:
+        str: Uppercase string of the remote interface MAC address
+        """
+        return getmacbyip(self.ip).upper()
 
     def __str__(self) -> str:
-        return f"IP: {self.ip}\nMAC: {self.mac}\nPort: {self.port}\nOnline: {self.online}"
+        return f"IP: {self.ip}\nMAC: {self.mac}\nPort: {self.port}\nInterface: {self.interface}\nOnline: {self.online}"
