@@ -12,8 +12,12 @@ class PacketGenerator():
     # initialising
     def __init__(self, params):
         self.params = params
-        self.seed = params['seed'] if params['seed'] else int(time())
-        self.randomiser = Randomiser(self.seed)
+        if params['seed']:
+            self.randomiser = Randomiser(params['seed'])
+        else:
+            self.randomiser = Randomiser()
+        self.seed = self.randomiser.seed
+
         # TODO: LOG seed as Randomiser
         print(f"SEED: {self.seed}")
 
@@ -39,11 +43,13 @@ class PacketGenerator():
         return packet
 
 
-    def randomise_host(self, host, ip_str="*.*.*.*"):
+    def randomise_host(self, host):
         # Randomise host IP
         if host.is_ip():
-            ip_str = host.ip
-        host.ip = self.randomiser.ip(ip_str)
+            host.ip = self.randomiser.ip(host.ip)
+        else:
+            host.ip = self.randomiser.ip()
+
         # Randomise host MAC
         if not host.is_mac():
             host.mac = self.randomiser.mac()

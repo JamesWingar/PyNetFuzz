@@ -119,3 +119,6 @@ class Host():
 
     def __str__(self) -> str:
         return f"IP: {self.ip}\nMAC: {self.mac}\nPort: {self.port}\nInterface: {self.interface}\nOnline: {self.online}"
+
+    def __repr__(self) -> str:
+        return f"Object: {self.__class__.__name__} ({self.ip}, {self.mac}, {self.port}, {self.interface}, {self.online})"
