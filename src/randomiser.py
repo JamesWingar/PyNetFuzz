@@ -164,4 +164,7 @@ class Randomiser():
         return random.randint(0, 3)
 
     def __str__(self) -> str:
-        return "Randomiser - Seed: ({self.seed})"
+        return f"Randomiser - Seed: ({self.seed})"
+
+    def __repr__(self) -> str:
+        return f"Object: {self.__class__.__name__} ({self.seed})"
