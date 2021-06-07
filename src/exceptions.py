@@ -3,7 +3,17 @@
 class BaseValidationError(ValueError):
     pass
 
-#--- SPECIFIC EXCEPTIONS----
+#--- HOST EXCEPTIONS----
+class HostNoIpAddressError(BaseValidationError):
+    pass
+class HostGetLocalIpError(BaseValidationError):
+    pass
+class HostGetLocalMacError(BaseValidationError):
+    pass
+class HostGetRemoteMacError(BaseValidationError):
+    pass
+
+#--- VALIDATION EXCEPTIONS----
 # IP address
 class IpAddressInvalidFormatError(BaseValidationError):
     pass
@@ -64,7 +74,7 @@ class CastTypeInvalidFormatError(BaseValidationError):
 class CastTypeInvalidValueError(BaseValidationError):
     pass
 
-#--- GENERIC EXCEPTIONS----
+#--- GENERIC TYPE EXCEPTIONS----
 # String
 class StringTooLongError(BaseValidationError):
     pass

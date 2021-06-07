@@ -1,10 +1,12 @@
 from scapy.all import sr1, IP, ICMP, arping, get_if_addr, get_if_hwaddr, getmacbyip
+import src.exceptions as ex
 from src.validation import (
     valid_scope_IP,
     valid_mac,
     valid_port,
     valid_name,
 )
+
 
 class Host():
     
@@ -77,7 +79,10 @@ class Host():
         bool: Returns true if ping is successful
         """
         if not self.is_ip():
-            raise ValueError("Can not ping a host with no IP address.")
+            raise ex.HostNoIpAddressError(
+                f'Host has no IP address. You can not use '
+                f'ping_host without an IP address.'
+            )
 
         return sr1(
             IP(dst=self.ip) / ICMP(),
@@ -95,7 +100,13 @@ class Host():
         str: Uppercase string of the interface IP address
              (Returns '0.0.0.0' upon failure)
         """
-        return get_if_addr(iface).upper()
+        ip_addr = get_if_addr(iface).upper()
+        if ip_addr == '0.0.0.0':
+            raise ex.HostGetLocalIpError(
+                f'Can not get local IP address. This could be '
+                f'due to an incorrect interface name.'
+            )
+        return ip_addr
 
     def get_local_mac(self, iface: str) -> str:
         """ Gets MAC address of local interface
@@ -106,8 +117,13 @@ class Host():
         Returns:
         str: Uppercase string of the local interface MAC address
         """
-        print(iface)
-        return get_if_hwaddr(iface).upper()
+        mac_addr = get_if_hwaddr(iface).upper()
+        if mac_addr is None:
+            raise ex.HostGetLocalMacError(
+                f'Can not get local Mac address. This could be '
+                f'due to an incorrect interface name.'
+            )
+        return mac_addr
 
     def get_remote_mac(self):
         """ Gets MAC address of a remote interface. Uses IP address of the class.
@@ -115,7 +131,13 @@ class Host():
         Returns:
         str: Uppercase string of the remote interface MAC address
         """
-        return getmacbyip(self.ip).upper()
+        mac_addr = getmacbyip(self.ip).upper()
+        if mac_addr is None:
+            raise ex.HostGetRemoteMacError(
+                f'Can not get remote Mac address. This could be '
+                f'due to an incorrect IP address.'
+            )
+        return mac_addr
 
     def __str__(self) -> str:
         return f"IP: {self.ip}\nMAC: {self.mac}\nPort: {self.port}\nInterface: {self.interface}\nOnline: {self.online}"
