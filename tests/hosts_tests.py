@@ -2,11 +2,7 @@ import unittest
 import psutil
 import socket
 from src import const
-from src.exceptions import (
-    IpAddressInvalidFormatError,
-    MacAddressInvalidFormatError,
-    PortInvalidFormatError,
-)
+import src.exceptions as ex
 
 # Module under test
 from src.hosts import Host
@@ -74,106 +70,105 @@ class TestArgumentParser(unittest.TestCase):
 
 
     def test_invalid_ip(self):
-        with self.assertRaises(IpAddressInvalidFormatError) as exception:
+        with self.assertRaises(ex.IpAddressInvalidFormatError) as exception:
             test_host = Host('256.255.255.255', "00:E7:EE:E7:61:5E", "8000")
 
-        with self.assertRaises(IpAddressInvalidFormatError) as exception:
+        with self.assertRaises(ex.IpAddressInvalidFormatError) as exception:
             test_host = Host('192.168.1.1450', "00:E7:EE:E7:61:5E", "8000")
 
-        with self.assertRaises(IpAddressInvalidFormatError) as exception:
+        with self.assertRaises(ex.IpAddressInvalidFormatError) as exception:
             test_host = Host('192.1681.254', "00:E7:EE:E7:61:5E", "8000")
 
-        with self.assertRaises(IpAddressInvalidFormatError) as exception:
+        with self.assertRaises(ex.IpAddressInvalidFormatError) as exception:
             test_host = Host('192168.1.254', "00:E7:EE:E7:61:5E", "8000")  
 
-        with self.assertRaises(IpAddressInvalidFormatError) as exception:
+        with self.assertRaises(ex.IpAddressInvalidFormatError) as exception:
             test_host = Host('192.168.1254', "00:E7:EE:E7:61:5E", "8000")   
 
-        with self.assertRaises(IpAddressInvalidFormatError) as exception:
+        with self.assertRaises(ex.IpAddressInvalidFormatError) as exception:
             test_host = Host('192-168-1-254', "00:E7:EE:E7:61:5E", "8000") 
 
-        with self.assertRaises(IpAddressInvalidFormatError) as exception:
+        with self.assertRaises(ex.IpAddressInvalidFormatError) as exception:
             test_host = Host('192.168.1.254/24', "00:E7:EE:E7:61:5E", "8000")   
 
-        with self.assertRaises(IpAddressInvalidFormatError) as exception:  
+        with self.assertRaises(ex.IpAddressInvalidFormatError) as exception:  
             test_host = Host('192.168.-1.254', "00:E7:EE:E7:61:5E", "8000")   
 
-        with self.assertRaises(IpAddressInvalidFormatError) as exception:
+        with self.assertRaises(ex.IpAddressTooShortValueError) as exception:
             test_host = Host("", "00:E7:EE:E7:61:5E", "8000")
 
 
     def test_invalid_mac(self):
-        with self.assertRaises(MacAddressInvalidFormatError) as exception:
+        with self.assertRaises(ex.MacAddressInvalidFormatError) as exception:
             test_host = Host("192.99.1.10", 'FG:FF:FF:FF:FF:FF', "8000")
 
-        with self.assertRaises(MacAddressInvalidFormatError) as exception:
+        with self.assertRaises(ex.MacAddressInvalidFormatError) as exception:
             test_host = Host("192.99.1.10", 'GG:GG:GG:GG:GG:GG', "8000")
 
-        with self.assertRaises(MacAddressInvalidFormatError) as exception:
+        with self.assertRaises(ex.MacAddressInvalidFormatError) as exception:
             test_host = Host("192.99.1.10", '01.9F:5E:00:66:01', "8000")
 
-        with self.assertRaises(MacAddressInvalidFormatError) as exception:
+        with self.assertRaises(ex.MacAddressInvalidFormatError) as exception:
             test_host = Host("192.99.1.10", '01:9F:5E.00:66:01', "8000")  
 
-        with self.assertRaises(MacAddressInvalidFormatError) as exception:
+        with self.assertRaises(ex.MacAddressInvalidFormatError) as exception:
             test_host = Host("192.99.1.10", '01:9F:5E.00:66:01', "8000")   
 
-        with self.assertRaises(MacAddressInvalidFormatError) as exception:
+        with self.assertRaises(ex.MacAddressInvalidFormatError) as exception:
             test_host = Host("192.99.1.10", '01:9F:5E/00:66:01', "8000") 
 
-        with self.assertRaises(MacAddressInvalidFormatError) as exception:
+        with self.assertRaises(ex.MacAddressInvalidFormatError) as exception:
             test_host = Host("192.99.1.10", "00:E7:EE:E7:615E", "8000")   
 
-        with self.assertRaises(MacAddressInvalidFormatError) as exception:  
+        with self.assertRaises(ex.MacAddressInvalidFormatError) as exception:  
             test_host = Host("192.99.1.10", "00:E7:EE:E7:61", "8000")
 
-        with self.assertRaises(MacAddressInvalidFormatError) as exception:
+        with self.assertRaises(ex.MacAddressTooShortValueError) as exception:
             test_host = Host("192.99.1.10", "", "8000")  
 
 
     def test_invalid_port(self):
-        with self.assertRaises(PortInvalidFormatError) as exception:
+        with self.assertRaises(ex.PortInvalidValueError) as exception:
             test_host = Host("192.99.1.10", "00:E7:EE:E7:61:5E", "65536")
 
-        with self.assertRaises(PortInvalidFormatError) as exception:
-            test_host = Host("192.99.1.10", "00:E7:EE:E7:61:5E", "-1000")
-
-        with self.assertRaises(PortInvalidFormatError) as exception:
+        with self.assertRaises(ex.PortInvalidValueError) as exception:
             test_host = Host("192.99.1.10", "00:E7:EE:E7:61:5E", "655350")
 
-        with self.assertRaises(PortInvalidFormatError) as exception:
+        with self.assertRaises(ex.PortInvalidValueError) as exception:
+            test_host = Host("192.99.1.10", "00:E7:EE:E7:61:5E", "-1000")
+
+        with self.assertRaises(ex.PortInvalidValueError) as exception:
+            test_host = Host("192.99.1.10", "00:E7:EE:E7:61:5E", "0") 
+
+        with self.assertRaises(ex.PortInvalidFormatError) as exception:
             test_host = Host("192.99.1.10", "00:E7:EE:E7:61:5E", "hello")  
 
-        with self.assertRaises(PortInvalidFormatError) as exception:
-            test_host = Host("192.99.1.10", "00:E7:EE:E7:61:5E", "0")   
-
-        with self.assertRaises(PortInvalidFormatError) as exception:
+        with self.assertRaises(ex.PortInvalidFormatError) as exception:
             test_host = Host("192.99.1.10", "00:E7:EE:E7:61:5E", "6534/0") 
 
-        with self.assertRaises(PortInvalidFormatError) as exception:
+        with self.assertRaises(ex.PortInvalidFormatError) as exception:
             test_host = Host("192.99.1.10", "00:E7:EE:E7:61:5E", "234.1")
 
-        with self.assertRaises(PortInvalidFormatError) as exception:
+        with self.assertRaises(ex.PortInvalidFormatError) as exception:
             test_host = Host("192.99.1.10", "00:E7:EE:E7:61:5E", "")
 
 
     def test_invalid_interface(self):
-        with self.assertRaises(TypeError) as exception:
+        with self.assertRaises(ex.NameInvalidFormatError) as exception:
             test_host = Host("192.99.1.10", "00:E7:EE:E7:61:5E", "8000", []) 
 
-        with self.assertRaises(TypeError) as exception:
+        with self.assertRaises(ex.NameInvalidFormatError) as exception:
             test_host = Host("192.99.1.10", "00:E7:EE:E7:61:5E", "8000", 12039)
 
-        with self.assertRaises(TypeError) as exception:
+        with self.assertRaises(ex.NameInvalidFormatError) as exception:
             test_host = Host("192.99.1.10", "00:E7:EE:E7:61:5E", "8000", 3.63456) 
 
-        with self.assertRaises(SystemExit) as exception: # TODO: creates but can't get IP (IP EEROR)
+        with self.assertRaises(ex.HostGetLocalIpError) as exception:
             test_host = Host("192.99.1.10", "00:E7:EE:E7:61:5E", "8000", "hello")   
 
 
     def test_valid_get_local_host(self):
         (iface_name, iface_addr, iface_mac) = self.get_test_interface_info()
-        print(f"Test local interface: {iface_name}, {iface_addr}, {iface_mac}")
 
         test_host = Host(iface_addr, "self", "8080", iface_name)
         self.assertEqual(test_host.ip, iface_addr)
@@ -208,9 +203,8 @@ class TestArgumentParser(unittest.TestCase):
 
     def test_invalid_get_local_host(self):
         (iface_name, iface_addr, iface_mac) = self.get_test_interface_info()
-        print(f"Test local interface: {iface_name}, {iface_addr}, {iface_mac}")
 
-        with self.assertRaises(SystemExit) as exception: # creates but can't get IP
+        with self.assertRaises(ex.HostGetLocalIpError) as exception:
             test_host = Host(iface_addr, "self", "8080", "hello")
 
 
