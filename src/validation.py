@@ -24,6 +24,11 @@ def valid_specific_IP(string: str, min: int=7, max: int= 17) -> str:
     if string is None:
         return string
 
+    if type(string) is not str:
+        raise ex.IpAddressInvalidValueError(
+            f'Not a valid IP address. ({string})'
+            f'Required to be in standard format X.X.X.X'
+        )
     if len(string) > max:
         raise ex.IpAddressTooLongValueError(
             f'Not a valid IP address, cannot be longer than {max} characters.'
@@ -33,11 +38,6 @@ def valid_specific_IP(string: str, min: int=7, max: int= 17) -> str:
         raise ex.IpAddressTooShortValueError(
             f'Not a valid IP address, cannot be shorter than {min} characters.'
             f'(Length={len(string)}) Required to be in standard format X.X.X.X'
-        )
-    if type(string) is not str:
-        raise ex.IpAddressInvalidValueError(
-            f'Not a valid IP address. ({string})'
-            f'Required to be in standard format X.X.X.X'
         )
     if not re.search(REGEX_SPECIFIC_IP, string):
         raise ex.IpAddressInvalidFormatError(
@@ -61,6 +61,11 @@ def valid_scope_IP(string: str, min: int=7, max: int= 17) -> str:
     if string is None:
         return string
 
+    if type(string) is not str:
+        raise ex.IpAddressInvalidValueError(
+            f'Not a valid IP address. ({string})'
+            f'Required to be in standard format X.X.X.X'
+        )
     if len(string) > max:
         raise ex.IpAddressTooLongValueError(
             f'Not a valid IP address, cannot be longer than {max} characters.'
@@ -70,11 +75,6 @@ def valid_scope_IP(string: str, min: int=7, max: int= 17) -> str:
         raise ex.IpAddressTooShortValueError(
             f'Not a valid IP address, cannot be shorter than {min} characters.'
             f'(Length={len(string)}) Required to be in standard format X.X.X.X'
-        )
-    if type(string) is not str:
-        raise ex.IpAddressInvalidValueError(
-            f'Not a valid IP address. ({string})'
-            f'Required to be in standard format X.X.X.X'
         )
     if not re.search(REGEX_SCOPE_IP, string):
         raise ex.IpAddressInvalidFormatError(
@@ -98,6 +98,11 @@ def valid_mac(string: str, min: int=12, max: int= 17) -> str:
     if string is None:
         return string
 
+    if type(string) is not str:
+        raise ex.MacAddressInvalidValueError(
+            f'Not a valid MAC address. ({string})'
+            f'Required to be in a standard format X:X:X:X:X:X or X-X-X-X-X-X or X.X.X'
+        )
     if len(string) > max:
         raise ex.MacAddressTooLongValueError(
             f'Not a valid MAC address, cannot be longer than {max} characters. (Length={len(string)})'
@@ -106,11 +111,6 @@ def valid_mac(string: str, min: int=12, max: int= 17) -> str:
     if len(string) < min:
         raise ex.MacAddressTooShortValueError(
             f'Not a valid MAC address, cannot be shorter than {min} characters. (Length={len(string)})'
-            f'Required to be in a standard format X:X:X:X:X:X or X-X-X-X-X-X or X.X.X'
-        )
-    if type(string) is not str:
-        raise ex.MacAddressInvalidValueError(
-            f'Not a valid MAC address. ({string})'
             f'Required to be in a standard format X:X:X:X:X:X or X-X-X-X-X-X or X.X.X'
         )
     if not re.search(REGEX_MAC, string):
@@ -163,6 +163,10 @@ def valid_name(string: Any, min: int=1, max: int= 31) -> int:
     if string is None:
         return string
 
+    if type(string) is not str:
+        raise ex.NameInvalidFormatError(
+            f'Not a valid name. ({string})'
+        )
     if len(string) > max:
         raise ex.NameTooLongError(
             f'Not a valid name, cannot be longer than {max} characters. (Length={len(string)})'
@@ -171,8 +175,4 @@ def valid_name(string: Any, min: int=1, max: int= 31) -> int:
         raise ex.NameTooShortError(
             f'Not a valid name, cannot be shorter than {min} characters. (Length={len(string)})'
         )
-    if type(string) is not str:
-        raise ex.NameInvalidFormatError(
-            f'Not a valid name. ({string})'
-        )
-    return string.upper()
+    return string
