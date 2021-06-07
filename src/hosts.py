@@ -33,7 +33,7 @@ class Host():
         else:
             self.ip = valid_scope_IP(ip)
             if mac == "self":
-                self.mac = self.get_remote_mac()
+                self.mac = self.get_remote_mac(self.ip)
             else:
                 self.mac = valid_mac(mac)
         
@@ -125,13 +125,13 @@ class Host():
             )
         return mac_addr
 
-    def get_remote_mac(self):
+    def get_remote_mac(self, ip: str) -> str:
         """ Gets MAC address of a remote interface. Uses IP address of the class.
         
         Returns:
         str: Uppercase string of the remote interface MAC address
         """
-        mac_addr = getmacbyip(self.ip).upper()
+        mac_addr = getmacbyip(ip).upper()
         if mac_addr is None:
             raise ex.HostGetRemoteMacError(
                 f'Can not get remote Mac address. This could be '
