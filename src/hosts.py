@@ -1,6 +1,8 @@
-from scapy.all import sr1, IP, ICMP, arping, get_if_addr, get_if_hwaddr, getmacbyip
+from scapy.all import sr1, IP, ICMP, getmacbyip
+import psutil
 import src.exceptions as ex
 from src.validation import (
+    valid_specific_IP,
     valid_scope_IP,
     valid_mac,
     valid_port,
@@ -100,13 +102,13 @@ class Host():
         str: Uppercase string of the interface IP address
              (Returns '0.0.0.0' upon failure)
         """
-        ip_addr = get_if_addr(iface).upper()
-        if ip_addr == '0.0.0.0':
+        local_ifaces = psutil.net_if_addrs()
+        if iface not in local_ifaces:
             raise ex.HostGetLocalIpError(
                 f'Can not get local IP address. This could be '
                 f'due to an incorrect interface name.'
             )
-        return ip_addr
+        return valid_specific_IP(local_ifaces[iface][0].address)
 
     def get_local_mac(self, iface: str) -> str:
         """ Gets MAC address of local interface
@@ -117,13 +119,13 @@ class Host():
         Returns:
         str: Uppercase string of the local interface MAC address
         """
-        mac_addr = get_if_hwaddr(iface).upper()
-        if mac_addr is None:
+        local_ifaces = psutil.net_if_addrs()
+        if iface not in local_ifaces:
             raise ex.HostGetLocalMacError(
                 f'Can not get local Mac address. This could be '
                 f'due to an incorrect interface name.'
             )
-        return mac_addr
+        return valid_mac(local_ifaces[iface][-1].address)
 
     def get_remote_mac(self, ip: str) -> str:
         """ Gets MAC address of a remote interface. Uses IP address of the class.
