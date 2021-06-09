@@ -1,5 +1,7 @@
+# Python library imports
 from scapy.all import sr1, IP, ICMP, getmacbyip
 import psutil
+# Package imports
 import src.exceptions as ex
 from src.validation import (
     valid_specific_IP,
@@ -21,9 +23,6 @@ class Host():
         port (str): Port value string
         interface (str): Optional argument for local interface name. If intereface
                          is given the class will get local ip and mac addresses.
-    
-        Returns:
-        str: Randomised IP address string
         """
         self.port = valid_port(port)
         self.interface = valid_name(interface)
@@ -38,8 +37,6 @@ class Host():
                 self.mac = self.get_remote_mac(self.ip)
             else:
                 self.mac = valid_mac(mac)
-        
-
 
     def is_online(self) -> bool:
         """ Checks if host is online
@@ -139,7 +136,7 @@ class Host():
                 f'Can not get remote Mac address. This could be '
                 f'due to an incorrect IP address.'
             )
-        return mac_addr
+        return valid_mac(mac_addr)
 
     def __str__(self) -> str:
         return f"IP: {self.ip}\nMAC: {self.mac}\nPort: {self.port}\nInterface: {self.interface}\nOnline: {self.online}"
