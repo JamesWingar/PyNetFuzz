@@ -1,8 +1,9 @@
+from typing import Any
+from time import time
 import random
 import re
-from typing import Any
+
 from src import const
-from time import time
 
 class Randomiser():
 
@@ -13,12 +14,12 @@ class Randomiser():
         seed (int): Integer for Suedo-random numbers to be seed from
         """
         if not type(seed) == int:
-            raise TypeError("Seed must be an integer.")
+            raise TypeError('Seed must be an integer.')
         
         self.seed = seed
         random.seed(seed)
     
-    def ip(self, ip_str: str="*.*.*.*") -> str:
+    def ip(self, ip_str: str='*.*.*.*') -> str:
         """ Generate a randomised IP address string
    
         Parameters:
@@ -28,7 +29,7 @@ class Randomiser():
         str: Randomised IP address string
         """
         if not type(ip_str) == str:
-            raise TypeError("IP address string must be a string.")
+            raise TypeError('IP address string must be a string.')
         if not re.search(const.REGEX_SCOPE_IP, ip_str):
             raise ValueError('IP address string must be a valid IP address eg. X.X.X.X')
 
@@ -68,9 +69,9 @@ class Randomiser():
         int: Randomised integer from 0 to length parameter
         """
         if not type(length) == int:
-            raise TypeError("Length must be an integer.")
+            raise TypeError('Length must be an integer.')
         if not length > 0:
-            raise ValueError("Length must be a positive integer.")
+            raise ValueError('Length must be a positive integer.')
 
         return random.randint(0, length - 1)
 
@@ -84,9 +85,9 @@ class Randomiser():
         Any: Randomised value from the List
         """
         if not type(choices) == list:
-            raise TypeError("Choices argument must be a list.")
+            raise TypeError('Choices argument must be a list.')
         if len(choices) < 1:
-            raise ValueError("Choices argument must not be an empty list.")
+            raise ValueError('Choices argument must not be an empty list.')
 
         return choices[random.randint(0, len(choices) - 1)]
 
@@ -101,9 +102,9 @@ class Randomiser():
         int: Randomised value between min and max boundaries
         """
         if not type(min) == int or not type(max) == int:
-            raise TypeError("Min and Max must be an integer.")
+            raise TypeError('Min and Max must be an integer.')
         if min > max:
-            raise ValueError("The minimum must be greater than the maximum.")
+            raise ValueError('The minimum must be greater than the maximum.')
         
         return random.randint(min, max)
 
@@ -164,7 +165,7 @@ class Randomiser():
         return random.randint(0, 3)
 
     def __str__(self) -> str:
-        return f"Randomiser - Seed: ({self.seed})"
+        return f'Randomiser - Seed: ({self.seed})'
 
     def __repr__(self) -> str:
-        return f"Object: {self.__class__.__name__} ({self.seed})"
+        return f'Object: {self.__class__.__name__} ({self.seed})'
