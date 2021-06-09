@@ -1,13 +1,19 @@
+# Python library imports
+from __future__ import annotations
+from typing import TYPE_CHECKING, Any, Dict, List
 import re
-from typing import Any
-
+# Package imports
 import src.exceptions as ex
 from src.const import (
     REGEX_SPECIFIC_IP,
     REGEX_SCOPE_IP,
     REGEX_MAC,
     MAX_PORT,
+    TRANSPORT_PROTOCOLS_INFO,
 )
+
+if TYPE_CHECKING:
+    from src.hosts import Host
 
 
 def valid_specific_IP(string: str, min: int=7, max: int= 17) -> str:
@@ -25,8 +31,8 @@ def valid_specific_IP(string: str, min: int=7, max: int= 17) -> str:
         return string
 
     if type(string) is not str:
-        raise ex.IpAddressInvalidValueError(
-            f'Not a valid IP address. ({string})'
+        raise ex.IpAddressInvalidTypeError(
+            f'Not a valid IP address type. Received: {string} ({type(string)})'
             f'Required to be in standard format X.X.X.X'
         )
     if len(string) > max:
@@ -62,8 +68,8 @@ def valid_scope_IP(string: str, min: int=7, max: int= 17) -> str:
         return string
 
     if type(string) is not str:
-        raise ex.IpAddressInvalidValueError(
-            f'Not a valid IP address. ({string})'
+        raise ex.IpAddressInvalidTypeError(
+            f'Not a valid IP address type. Received: {string} ({type(string)})'
             f'Required to be in standard format X.X.X.X'
         )
     if len(string) > max:
@@ -77,7 +83,7 @@ def valid_scope_IP(string: str, min: int=7, max: int= 17) -> str:
             f'(Length={len(string)}) Required to be in standard format X.X.X.X'
         )
     if not re.search(REGEX_SCOPE_IP, string):
-        raise ex.IpAddressInvalidFormatError(
+        raise ex.IpScopeAddressInvalidFormatError(
             f'Not a valid IP address. ({string})'
             f'Required to be in standard format X.X.X.X'
         )
@@ -99,8 +105,8 @@ def valid_mac(string: str, min: int=12, max: int= 17) -> str:
         return string
 
     if type(string) is not str:
-        raise ex.MacAddressInvalidValueError(
-            f'Not a valid MAC address. ({string})'
+        raise ex.MacAddressInvalidTypeError(
+            f'Not a valid MAC address type. Received: {string} ({type(string)})'
             f'Required to be in a standard format X:X:X:X:X:X or X-X-X-X-X-X or X.X.X'
         )
     if len(string) > max:
@@ -134,23 +140,25 @@ def valid_port(string: Any, min: int=1, max: int= MAX_PORT) -> int:
     if string is None:
         return string
 
+    if type(string) not in [str, float, int]:
+        raise ex.PortInvalidTypeError(
+            f'Not a valid port number type. Received: {string} ({type(string)})'
+        )
     try:
         value = int(string)
-    except:
+    except ValueError as e:
         raise ex.PortInvalidFormatError(
-            f'Not a valid port number format. (Input={string})'
+            f'Not a valid port number format. Received: {string}'
+        )
+    if value < min or value > max:
+        raise ex.PortInvalidValueError(
+            f'Not a valid port number value. (Value={value})'
             f'It must be an integer between {min} and {max}'
         )
-    else:
-        if value < min or value > max:
-            raise ex.PortInvalidValueError(
-                f'Not a valid port number value. (Value={value})'
-                f'It must be an integer between {min} and {max}'
-            )
     return string
 
 
-def valid_name(string: Any, min: int=1, max: int= 31) -> int:
+def valid_name(string: Any, min: int=1, max: int=31) -> int:
     """ Validation test for a name
 
     Parameters:
@@ -164,8 +172,8 @@ def valid_name(string: Any, min: int=1, max: int= 31) -> int:
         return string
 
     if type(string) is not str:
-        raise ex.NameInvalidFormatError(
-            f'Not a valid name. ({string})'
+        raise ex.NameInvalidTypeError(
+            f'Not a valid name type. Received: {string} ({type(string)})'
         )
     if len(string) > max:
         raise ex.NameTooLongError(
@@ -176,3 +184,77 @@ def valid_name(string: Any, min: int=1, max: int= 31) -> int:
             f'Not a valid name, cannot be shorter than {min} characters. (Length={len(string)})'
         )
     return string
+
+def valid_host(host: Host) -> Host:
+    """ Validation test for valid Host class
+
+    Parameters:
+    host (Host): Host class object
+
+    Returns:
+    Host: Valid Host object
+    """
+    if not isinstance(host, Host):
+        raise ex.InvalidHostError(
+            f'Must be Host class objects. Received: {host} type({type(host)}'
+        )
+    if host.ip is None:
+        raise ex.HostNoIpAddressError(
+            f'Host IP instance attribute cannot be None.'
+        )
+    if host.mac is None:
+        raise ex.HostNoMacAddressError(
+            f'Host MAC instance attribute cannot be None.'
+        )
+    if host.port is None:
+        raise ex.HostNoPortAddressError(
+            f'Host port instance attribute cannot be None.'
+        )
+    return host
+
+
+def valid_packet_info(info: Dict) -> Dict:
+    """ Validation test for valid packet info
+
+    Parameters:
+    info (Dict): Info dictionary contain key,value pairs
+
+    Returns:
+    dict: Valid packet info dictionary object
+    """
+    must_contain = ['int_protocol', 'trans_protocol', 'cast', 'length', 'vlan', 'headers']
+
+    if type(info) is not dict:
+        raise ex.PacketInfoTypeError(
+            f'Not a valid packet info data type. Received: {info} ({type(info)})'
+            f'Required to be a dict with at least the following keys: {must_contain}'
+        )
+
+    info_keys_set = set(info.keys())
+    for key in must_contain:
+        if key not in info_keys_set:
+            raise ex.PacketInfoKeysError(
+            f'Packet info does not have the correct minimal entries. '
+            f'Received: {info_keys_set}, Requires: {must_contain}'
+        )
+    
+    if info['headers']:
+        must_contain.append('ip_header')
+        if info['trans_protocol'] == TRANSPORT_PROTOCOLS_INFO['tcp']['value']:
+            must_contain.append('tcp_header')
+
+    if len(must_contain) != len(info):
+        raise ex.PacketInfoLengthError(
+            f'Packet info received unexpected number of values, {len(info)}'
+        )
+    must_contain_set = set(must_contain)
+    if must_contain_set != info_keys_set:
+        if must_contain_set - info_keys_set:
+            raise ex.PacketInfoMissingEntriesError(
+                f'Packet info has missing values: {must_contain_set - info_keys_set}'
+            )
+        if info_keys_set - must_contain_set:
+            raise ex.PacketInfoExtraEntriesError(
+                f'Packet info has incorrect values: {info_keys_set - must_contain_set}'
+            )
+    return info

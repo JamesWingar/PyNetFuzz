@@ -1,6 +1,7 @@
 import unittest
 import psutil
 import socket
+
 from src import const
 import src.exceptions as ex
 
@@ -70,28 +71,28 @@ class TestArgumentParser(unittest.TestCase):
 
 
     def test_invalid_ip(self):
-        with self.assertRaises(ex.IpAddressInvalidFormatError) as exception:
+        with self.assertRaises(ex.IpScopeAddressInvalidFormatError) as exception:
             test_host = Host('256.255.255.255', "00:E7:EE:E7:61:5E", "8000")
 
-        with self.assertRaises(ex.IpAddressInvalidFormatError) as exception:
+        with self.assertRaises(ex.IpScopeAddressInvalidFormatError) as exception:
             test_host = Host('192.168.1.1450', "00:E7:EE:E7:61:5E", "8000")
 
-        with self.assertRaises(ex.IpAddressInvalidFormatError) as exception:
+        with self.assertRaises(ex.IpScopeAddressInvalidFormatError) as exception:
             test_host = Host('192.1681.254', "00:E7:EE:E7:61:5E", "8000")
 
-        with self.assertRaises(ex.IpAddressInvalidFormatError) as exception:
+        with self.assertRaises(ex.IpScopeAddressInvalidFormatError) as exception:
             test_host = Host('192168.1.254', "00:E7:EE:E7:61:5E", "8000")  
 
-        with self.assertRaises(ex.IpAddressInvalidFormatError) as exception:
+        with self.assertRaises(ex.IpScopeAddressInvalidFormatError) as exception:
             test_host = Host('192.168.1254', "00:E7:EE:E7:61:5E", "8000")   
 
-        with self.assertRaises(ex.IpAddressInvalidFormatError) as exception:
+        with self.assertRaises(ex.IpScopeAddressInvalidFormatError) as exception:
             test_host = Host('192-168-1-254', "00:E7:EE:E7:61:5E", "8000") 
 
-        with self.assertRaises(ex.IpAddressInvalidFormatError) as exception:
+        with self.assertRaises(ex.IpScopeAddressInvalidFormatError) as exception:
             test_host = Host('192.168.1.254/24', "00:E7:EE:E7:61:5E", "8000")   
 
-        with self.assertRaises(ex.IpAddressInvalidFormatError) as exception:  
+        with self.assertRaises(ex.IpScopeAddressInvalidFormatError) as exception:  
             test_host = Host('192.168.-1.254', "00:E7:EE:E7:61:5E", "8000")   
 
         with self.assertRaises(ex.IpAddressTooShortValueError) as exception:
@@ -154,14 +155,20 @@ class TestArgumentParser(unittest.TestCase):
 
 
     def test_invalid_interface(self):
-        with self.assertRaises(ex.NameInvalidFormatError) as exception:
+        with self.assertRaises(ex.NameInvalidTypeError) as exception:
             test_host = Host("192.99.1.10", "00:E7:EE:E7:61:5E", "8000", []) 
 
-        with self.assertRaises(ex.NameInvalidFormatError) as exception:
+        with self.assertRaises(ex.NameInvalidTypeError) as exception:
             test_host = Host("192.99.1.10", "00:E7:EE:E7:61:5E", "8000", 12039)
 
-        with self.assertRaises(ex.NameInvalidFormatError) as exception:
+        with self.assertRaises(ex.NameInvalidTypeError) as exception:
             test_host = Host("192.99.1.10", "00:E7:EE:E7:61:5E", "8000", 3.63456) 
+
+        with self.assertRaises(ex.NameTooShortError) as exception:
+            test_host = Host("192.99.1.10", "00:E7:EE:E7:61:5E", "8000", "")
+
+        with self.assertRaises(ex.NameTooLongError) as exception:
+            test_host = Host("192.99.1.10", "00:E7:EE:E7:61:5E", "8000", "abcdefghijklmnopqrstuvwxyz123456") 
 
         with self.assertRaises(ex.HostGetLocalIpError) as exception:
             test_host = Host("192.99.1.10", "00:E7:EE:E7:61:5E", "8000", "hello")   
