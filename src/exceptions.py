@@ -30,6 +30,8 @@ class PacketInfoTypeError(BaseValidationError):
     pass
 class PacketInfoKeysError(BaseValidationError):
     pass
+class PacketInfoLengthError(BaseValidationError):
+    pass
 class PacketInfoMissingEntriesError(BaseValidationError):
     pass
 class PacketInfoExtraEntriesError(BaseValidationError):
