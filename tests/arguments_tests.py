@@ -369,6 +369,16 @@ class TestArgumentParser(unittest.TestCase):
             parse_args(
                 ['192.168.1.254', 'eth0', '1000', '-t_p', '80', '-s_p', '655350']
             )
+
+        with self.assertRaises(SystemExit) as exception:
+            parse_args(
+                ['192.168.1.254', 'eth0', '1000', '-t_p', 'hello', '-s_p', '-8080']
+            )
+
+        with self.assertRaises(SystemExit) as exception:
+            parse_args(
+                ['192.168.1.254', 'eth0', '1000', '-t_p', '80', '-s_p', 'hello']
+            )
         
 
     def test_cast_arg(self):
