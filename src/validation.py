@@ -194,6 +194,7 @@ def valid_host(host: Host) -> Host:
     Returns:
     Host: Valid Host object
     """
+    from src.hosts import Host
     if not isinstance(host, Host):
         raise ex.InvalidHostError(
             f'Must be Host class objects. Received: {host} type({type(host)}'
@@ -240,12 +241,13 @@ def valid_packet_info(info: Dict) -> Dict:
     
     if info['headers']:
         must_contain.append('ip_header')
-        if info['trans_protocol'] == TRANSPORT_PROTOCOLS_INFO['tcp']['value']:
+        if int(info['trans_protocol']) == int(TRANSPORT_PROTOCOLS_INFO['tcp']['value']):
             must_contain.append('tcp_header')
 
     if len(must_contain) != len(info):
         raise ex.PacketInfoLengthError(
-            f'Packet info received unexpected number of values, {len(info)}'
+            f'{must_contain}'
+            f'Packet info received unexpected number of values, {len(info)}. Expected {len(must_contain)}'
         )
     must_contain_set = set(must_contain)
     if must_contain_set != info_keys_set:
