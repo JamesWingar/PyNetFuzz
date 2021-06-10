@@ -75,19 +75,19 @@ class Randomiser():
 
         return random.randint(0, length - 1)
 
-    def choose(self, choices: list) -> Any:
+    def choose(self, choices: Any) -> Any:
         """ Randomised choice of value from a List
    
         Parameters:
-        choices (list): List of choices to return a value from
+        choices (Any): List of choices to return a value from
     
         Returns:
         Any: Randomised value from the List
         """
-        if not type(choices) == list:
-            raise TypeError('Choices argument must be a list.')
+        if type(choices) not in [list, set, dict, tuple, str]:
+            raise TypeError('Choices argument must be an iterable.')
         if len(choices) < 1:
-            raise ValueError('Choices argument must not be an empty list.')
+            raise ValueError('Choices argument must not be empty.')
 
         return choices[random.randint(0, len(choices) - 1)]
 
