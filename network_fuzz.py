@@ -3,7 +3,7 @@
 # import from src
 from src.arguments import parse_args
 from src.hosts import Host
-from src.packet import PacketGenerator
+from src.packetGenerator import PacketGenerator
 from src import const
 
 def main():
