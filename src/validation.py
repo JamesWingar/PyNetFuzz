@@ -127,35 +127,35 @@ def valid_mac(string: str, min: int=12, max: int= 17) -> str:
     return string.upper()
 
 
-def valid_port(string: Any, min: int=1, max: int= MAX_PORT) -> int:
+def valid_port(value: Any, min: int=1, max: int= MAX_PORT) -> int:
     """ Validation test for a Port number
 
     Parameters:
-    string (Any): Port number as a convertable datatype (str/int/float)
+    value (Any): Port number as a convertable datatype (str/int/float)
     min (int): Minimum port number
     max (int): Maximum port number
     Returns:
     str: Valid MAC address
     """
-    if string is None:
-        return string
+    if value is None:
+        return value
 
-    if type(string) not in [str, float, int]:
+    if type(value) not in [str, float, int]:
         raise ex.PortInvalidTypeError(
-            f'Not a valid port number type. Received: {string} ({type(string)})'
+            f'Not a valid port number type. Received: {value} ({type(value)})'
         )
     try:
-        value = int(string)
+        value = int(value)
     except ValueError as e:
         raise ex.PortInvalidFormatError(
-            f'Not a valid port number format. Received: {string}'
+            f'Not a valid port number format. Received: {value}'
         )
     if value < min or value > max:
         raise ex.PortInvalidValueError(
             f'Not a valid port number value. (Value={value})'
             f'It must be an integer between {min} and {max}'
         )
-    return string
+    return value
 
 
 def valid_name(string: Any, min: int=1, max: int=31) -> int:
