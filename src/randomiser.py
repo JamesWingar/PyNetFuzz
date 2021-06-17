@@ -84,7 +84,7 @@ class Randomiser():
         Returns:
         Any: Randomised value from the List
         """
-        if type(choices) not in [list, set, dict, tuple, str]:
+        if type(choices) not in [list, set, tuple, str]:
             raise TypeError('Choices argument must be an iterable.')
         if len(choices) < 1:
             raise ValueError('Choices argument must not be empty.')

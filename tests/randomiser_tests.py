@@ -151,15 +151,11 @@ class TestRandomiser(unittest.TestCase):
 
         # Incorrect argument datatype tests
         with self.assertRaises(TypeError) as exception:
-            Randomiser(seed_1).choose("Marilyn Monroe")
-        with self.assertRaises(TypeError) as exception:
             Randomiser(seed_1).choose(123.456)
         with self.assertRaises(TypeError) as exception:
             Randomiser(seed_1).choose(False)
         with self.assertRaises(TypeError) as exception:
             Randomiser(seed_1).choose({"Hello": 1})
-        with self.assertRaises(TypeError) as exception:
-            Randomiser(seed_1).choose((5, 6))
 
         # Incorrect argument value tests
         with self.assertRaises(ValueError) as exception:
