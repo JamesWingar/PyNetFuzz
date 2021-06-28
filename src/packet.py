@@ -98,7 +98,6 @@ class Packet():
         sendp(self.packet, iface=iface, verbose=verbose)
         return
         
-    
     def is_udp(self):
         """ Checks if transport protocol is UDP
    
@@ -106,7 +105,6 @@ class Packet():
         None: Returns None
         """
         return self.trans_protocol == TRANSPORT_PROTOCOLS_INFO['udp']['value']
-
 
     def is_tcp(self):
         """ Checks if transport protocol is TCP
