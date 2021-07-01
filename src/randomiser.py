@@ -1,9 +1,30 @@
+#Python library imports
 from typing import Any
 from time import time
 import random
 import re
+# Package imports
+from src.hosts import Host
+from src.packet import PacketDetails 
+from src.const import (
+    REGEX_SPECIFIC_IP,
+    REGEX_SCOPE_IP,
+    REGEX_MAC,
+    MAX_PORT,
+    TRANSPORT_PROTOCOLS_INFO,
+    CAST_TYPES,
+    INTERNET_PROTOCOLS,
+    TRANSPORT_PROTOCOLS,
+    INTERNET_PROTOCOLS_INFO,
+    PACKETS_PER_SEED,
+)
 
-from src import const
+from src.validation import (
+    valid_host,
+    valid_packet_info,
+    valid_seed,
+)
+
 
 class Randomiser():
 
@@ -13,10 +34,7 @@ class Randomiser():
         Parameters:
         seed (int): Integer for Suedo-random numbers to be seed from
         """
-        if not type(seed) == int:
-            raise TypeError('Seed must be an integer.')
-        
-        self.seed = seed
+        self.seed = valid_seed(seed)
         random.seed(seed)
     
     def ip(self, ip_str: str='*.*.*.*') -> str:
@@ -30,7 +48,7 @@ class Randomiser():
         """
         if not type(ip_str) == str:
             raise TypeError('IP address string must be a string.')
-        if not re.search(const.REGEX_SCOPE_IP, ip_str):
+        if not re.search(REGEX_SCOPE_IP, ip_str):
             raise ValueError('IP address string must be a valid IP address eg. X.X.X.X')
 
         return '.'.join([str(self.bit_8()) if byte == '*' else byte for byte in ip_str.split('.')])
@@ -50,6 +68,81 @@ class Randomiser():
         int: Randomised Port number (0, 65535)
         """
         return self.bit_16()
+
+    def host(self, host: Host) -> Host:
+        """ Generate a randomised host from a given Host object
+   
+        Parameters:
+        host (Host): Host object to be randomised
+    
+        Returns:
+        Host: Randomised Host object
+        """
+        host.ip = self.ip(host.ip) if host.is_ip() else self.ip()
+        if not host.is_mac():
+            host.mac = self.mac()
+        if not host.is_port():
+            host.port = self.port()
+
+        return host
+
+    def packet_details(self, pkt_details: PacketDetails, min_length: int=0, max_length: int=None):
+        """ Generate randomised packet details from a given PacketDetails object
+   
+        Parameters:
+        pkt_details (PacketDetails): PacketDetails object to be randomised
+        min_length (int): Minimum length of IP address
+        max_length (int): Maximum length of IP address
+    
+        Returns:
+        pkt_details (PacketDetails): Randomised PacketDetails object
+        """
+        int_str = self.choose(INTERNET_PROTOCOLS)
+        trans_str = self.choose(TRANSPORT_PROTOCOLS)
+
+        packet_info = {
+            'int_protocol': pkt_details.get('int_protocol', \
+                INTERNET_PROTOCOLS_INFO[int_str]['value']),
+            'trans_protocol': pkt_details.get('trans_protocol', \
+                TRANSPORT_PROTOCOLS_INFO[trans_str]['value']),
+            'cast': pkt_details.get('cast', self.choose(CAST_TYPES)),
+            'vlan': pkt_details.get('vlan', None),
+            'headers': pkt_details.get('headers', None),
+        }
+
+        if not max_length:
+            max_length = INTERNET_PROTOCOLS_INFO[int_str]['max_length'] - \
+                            INTERNET_PROTOCOLS_INFO[int_str]['header_length'] - \
+                            TRANSPORT_PROTOCOLS_INFO[trans_str]['header_length']
+        packet_info['length'] = self.rand(min_length, max_length)
+
+        if pkt_details.get('headers', None):
+            # Randomise IP header
+            if packet_info.get('int_protocol') == INTERNET_PROTOCOLS_INFO['ipv6']['value']:
+                packet_info['ip_header'] = { #ipv6
+                    'tc': self.randomiser.bit_8(), # Traffic class
+                    'fl': self.randomiser.bit_20(), # Flow Label
+                    'hlim': self.randomiser.bit_8(), # Identification
+                }
+            else:
+                packet_info['ip_header'] = { #ipv4 or jumbo 
+                    'ttl': self.randomiser.bit_8(), # TTL 
+                    'tos': self.randomiser.bit_8(), # DSCP
+                    'flags': self.randomiser.bit_3(), # Flags
+                    'frag': self.randomiser.bit_13(), # Fragmentation offset
+                    'id': self.randomiser.bit_16(), # Identification
+                }
+
+            # Random TCP header
+            if packet_info.get('trans_protocol') == TRANSPORT_PROTOCOLS_INFO['tcp']['value']:
+                packet_info['tcp_header'] = {
+                    'seq': self.randomiser.bit_32(), # sequence number
+                    'ack': self.randomiser.bit_32(), # Acknowledgment number
+                    'window': self.randomiser.bit_16(), # Window size
+                    'urgptr': self.randomiser.bit_16(), # urgent pointer
+                }
+
+        return packet_info
 
     def boolean(self) -> bool:
         """ Generate a boolean value
