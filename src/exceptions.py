@@ -107,10 +107,12 @@ class CastTypeInvalidFormatError(BaseValidationError):
 class CastTypeInvalidValueError(BaseValidationError):
     pass
 
-# Cast type
-class CastTypeInvalidFormatError(BaseValidationError):
+# Seed
+class SeedInvalidTypeError(BaseValidationError):
     pass
-class CastTypeInvalidValueError(BaseValidationError):
+class SeedInvalidFormatError(BaseValidationError):
+    pass
+class SeedInvalidValueError(BaseValidationError):
     pass
 
 #--- GENERIC TYPE EXCEPTIONS----
