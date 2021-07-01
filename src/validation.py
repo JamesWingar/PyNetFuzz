@@ -2,6 +2,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Dict, List
 import re
+import sys
 # Package imports
 import src.exceptions as ex
 from src.const import (
@@ -134,6 +135,7 @@ def valid_port(value: Any, min: int=1, max: int= MAX_PORT) -> int:
     value (Any): Port number as a convertable datatype (str/int/float)
     min (int): Minimum port number
     max (int): Maximum port number
+
     Returns:
     str: Valid MAC address
     """
@@ -165,6 +167,7 @@ def valid_name(string: Any, min: int=1, max: int=31) -> int:
     string (str): Name as a string
     min (int): Minimum string length
     max (int): Maximum string length
+
     Returns:
     str: Valid string
     """
@@ -184,6 +187,7 @@ def valid_name(string: Any, min: int=1, max: int=31) -> int:
             f'Not a valid name, cannot be shorter than {min} characters. (Length={len(string)})'
         )
     return string
+
 
 def valid_host(host: Host) -> Host:
     """ Validation test for valid Host class
@@ -260,3 +264,35 @@ def valid_packet_info(info: Dict) -> Dict:
                 f'Packet info has incorrect values: {info_keys_set - must_contain_set}'
             )
     return info
+
+
+def valid_seed(value: int, min: int=0, max: int=sys.maxsize) -> int:
+    """ Validation test for valid seed
+
+    Parameters:
+    value (Any): Seed value as a convertable datatype (str/int/float)
+    min (int): Minimum Seed value
+    max (int): Maximum Seed value
+
+    Returns:
+    int: Valid Seed value
+    """
+    if value is None:
+        return value
+
+    if type(value) not in [str, float, int]:
+        raise ex.SeedInvalidTypeError(
+            f'Not a valid Seed type. Received: {value} ({type(value)})'
+        )
+    try:
+        value = int(value)
+    except ValueError as e:
+        raise ex.SeedInvalidFormatError(
+            f'Not a valid Seed format. Received: {value}'
+        )
+    if value < min or value > max:
+        raise ex.SeedInvalidValueError(
+            f'Not a valid Seed value. (Value={value})'
+            f'It must be an integer between {min} and {max}'
+        )
+    return value
