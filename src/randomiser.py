@@ -120,26 +120,26 @@ class Randomiser():
             # Randomise IP header
             if packet_info.get('int_protocol') == INTERNET_PROTOCOLS_INFO['ipv6']['value']:
                 packet_info['ip_header'] = { #ipv6
-                    'tc': self.randomiser.bit_8(), # Traffic class
-                    'fl': self.randomiser.bit_20(), # Flow Label
-                    'hlim': self.randomiser.bit_8(), # Identification
+                    'tc': self.bit_8(), # Traffic class
+                    'fl': self.bit_20(), # Flow Label
+                    'hlim': self.bit_8(), # Identification
                 }
             else:
                 packet_info['ip_header'] = { #ipv4 or jumbo 
-                    'ttl': self.randomiser.bit_8(), # TTL 
-                    'tos': self.randomiser.bit_8(), # DSCP
-                    'flags': self.randomiser.bit_3(), # Flags
-                    'frag': self.randomiser.bit_13(), # Fragmentation offset
-                    'id': self.randomiser.bit_16(), # Identification
+                    'ttl': self.bit_8(), # TTL 
+                    'tos': self.bit_8(), # DSCP
+                    'flags': self.bit_3(), # Flags
+                    'frag': self.bit_13(), # Fragmentation offset
+                    'id': self.bit_16(), # Identification
                 }
 
             # Random TCP header
             if packet_info.get('trans_protocol') == TRANSPORT_PROTOCOLS_INFO['tcp']['value']:
                 packet_info['tcp_header'] = {
-                    'seq': self.randomiser.bit_32(), # sequence number
-                    'ack': self.randomiser.bit_32(), # Acknowledgment number
-                    'window': self.randomiser.bit_16(), # Window size
-                    'urgptr': self.randomiser.bit_16(), # urgent pointer
+                    'seq': self.bit_32(), # sequence number
+                    'ack': self.bit_32(), # Acknowledgment number
+                    'window': self.bit_16(), # Window size
+                    'urgptr': self.bit_16(), # urgent pointer
                 }
 
         return packet_info
