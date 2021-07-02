@@ -2,124 +2,45 @@
 
 # Package imports
 from src.randomiser import Randomiser
-from src.packet import Packet
+from src.packet import Packet, PacketDetails
 from src.hosts import Host
 from src.const import (
-    CAST_TYPES,
-    INTERNET_PROTOCOLS,
-    TRANSPORT_PROTOCOLS,
-    INTERNET_PROTOCOLS_INFO,
-    TRANSPORT_PROTOCOLS_INFO,
+    PACKETS_PER_SEED,
+)
+from src.validation import (
+    valid_host,
+    valid_packet_details,
 )
 
-class PacketGenerator():
-    # Class Attribute
-    count = 0
-    
-    # initialising
-    def __init__(self, params):
-        self.params = params
-        if params['seed']:
-            self.randomiser = Randomiser(params['seed'])
-        else:
-            self.randomiser = Randomiser()
-        self.seed = self.randomiser.seed
+def packet_generator(target: Host, details: PacketDetails, source: Host=Host(None, None, None), seed: int=None, max_packets: int=PACKETS_PER_SEED):
+    """ Generator method to create randomised packets
+   
+        Parameters:
+        target (Host): Host object containing information for packet generation
+        packet_details (PacketDetails): Object contains required details for packet generation
+        source (Host): Optional Host object for packet generation
+        seed (int): Value for Randomiser to create Suedo-random numbers
+        max_packets (int): Value for max packets to be created from a single generator
 
-        # TODO: LOG seed as Randomiser
-        print(f"SEED: {self.seed}")
+        Returns:
+        Packet: Yields a created randomised packet 
+    """
+    target = valid_host(target)
+    details = valid_packet_details(details)
+    randomiser = Randomiser(seed)
 
+    for _ in range(max_packets):     
+        # randomise hosts   
+        random_target = randomiser.host(target) 
+        random_source = randomiser.host(source)
+        # randomise packet info
+        random_details = randomiser.packet_details(details, details.min_length, details.max_length) 
 
-    def create_packet(self, target, source=Host(None, None, None)):
-        
-        #randomise hosts
-        target, source = self.randomise_host(target), self.randomise_host(source)
-        
-        #randomise packet info
-        packet_info = self.randomise_params(self.params)
-        print(f"PACKET INFO: {packet_info}")
-
-        #create packet
-        packet = Packet(target, source, packet_info)
+        # create packet
+        packet = Packet(random_target, random_source, random_details)
         packet.add_all_layers()
         
-        # TODO: LOG Packet sent in concise way
-        print(f"PACKET number {self.count}:\n{packet}")
+        # output created packet
+        print(f"Packet #{_}: {packet}")
 
-        # increment created packet counter
-        self.count += 1
-
-        return packet
-
-
-    def randomise_host(self, host):
-        # Randomise host IP
-        if host.is_ip():
-            host.ip = self.randomiser.ip(host.ip)
-        else:
-            host.ip = self.randomiser.ip()
-
-        # Randomise host MAC
-        if not host.is_mac():
-            host.mac = self.randomiser.mac()
-        # Randomise host PORT
-        if not host.is_port():
-            host.port = self.randomiser.port()
-
-        return host
-
-
-    def randomise_params(self, params, min_len=0, max_len=None):
-
-        int_str = self.randomiser.choose(INTERNET_PROTOCOLS)
-        trans_str = self.randomiser.choose(TRANSPORT_PROTOCOLS)
-
-        packet_info = {
-            'int_protocol': params['int_protocol'] if params['int_protocol'] else \
-                INTERNET_PROTOCOLS_INFO[int_str]['value'],
-            'trans_protocol': params['trans_protocol'] if params['trans_protocol'] else \
-                TRANSPORT_PROTOCOLS_INFO[trans_str]['value'],
-            'cast': params['cast'] if params['cast'] else \
-                self.randomiser.choose(CAST_TYPES),
-            'vlan': params['vlan'],
-            'headers': params['headers']
-        }
-
-        if not max_len:
-            max_len = INTERNET_PROTOCOLS_INFO[int_str]['max_length'] - \
-                INTERNET_PROTOCOLS_INFO[int_str]['header_length'] - \
-                TRANSPORT_PROTOCOLS_INFO[trans_str]['header_length']
-
-        packet_info['length'] = self.randomiser.rand(min_len, max_len)
-
-        if params['headers']:
-            # Randomise IP header
-            if packet_info['int_protocol'] == INTERNET_PROTOCOLS_INFO['ipv6']['value']:
-                #ipv6
-                packet_info['ip_header'] = {
-                    'tc': self.randomiser.bit_8(), # Traffic class
-                    'fl': self.randomiser.bit_20(), # Flow Label
-                    'hlim': self.randomiser.bit_8(), # Identification
-                }
-            else:
-                #ipv4 or jumbo 
-                packet_info['ip_header'] = {
-                    'ttl': self.randomiser.bit_8(), # TTL 
-                    'tos': self.randomiser.bit_8(), # DSCP
-                    'flags': self.randomiser.bit_3(), # Flags
-                    'frag': self.randomiser.bit_13(), # Fragmentation offset
-                    'id': self.randomiser.bit_16(), # Identification
-                }
-
-            # Random TCP header
-            if packet_info['trans_protocol'] == TRANSPORT_PROTOCOLS_INFO['tcp']['value']:
-                packet_info['tcp_header'] = {
-                    'seq': self.randomiser.bit_32(), # sequence number
-                    'ack': self.randomiser.bit_32(), # Acknowledgment number
-                    'window': self.randomiser.bit_16(), # Window size
-                    'urgptr': self.randomiser.bit_16(), # urgent pointer
-                }
-
-        return packet_info
-
-    def get_count(self):
-        return self.count
+        yield packet
