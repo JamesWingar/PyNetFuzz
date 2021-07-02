@@ -28,11 +28,9 @@ class HostGetRemoteMacError(BaseValidationError):
     pass
 
 #--- PACKET EXCEPTIONS----
+
+#--- PACKET INFO EXCEPTIONS----
 class PacketInfoTypeError(BaseValidationError):
-    pass
-class PacketInfoKeysError(BaseValidationError):
-    pass
-class PacketInfoLengthError(BaseValidationError):
     pass
 class PacketInfoMissingEntriesError(BaseValidationError):
     pass
