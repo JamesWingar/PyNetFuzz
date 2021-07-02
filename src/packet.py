@@ -1,5 +1,5 @@
 # Python library imports
-from typing import Dict
+from typing import Any, Dict
 from scapy.all import sendp, Ether, Dot1Q, IP, UDP, TCP, randstring
 # Package imports
 from src.hosts import Host
@@ -9,26 +9,56 @@ from src.const import (
 from src.validation import (
     valid_host,
     valid_packet_info,
+    valid_packet_details,
 )
+
+
+class PacketDetails():
+
+    def init(self, info: Dict):
+        """ PacketDetails class built-in initialiser
+   
+        Parameters:
+        info (Dict): dict containing packet required info  
+        """
+        self.info = valid_packet_info(info)
+        for key, value in info.items():
+            setattr(self, key, value)
+
+    def get(self, attribute: str, default: Any=None) -> Any:
+        """ Attempts to get the requested attribute
+   
+        Parameters:
+        attribute (str): attribute name to retrieve
+        default (Any): fallback value should the attribute not exist
+
+        Returns:
+        Any: Returns value of the attribute, otherwise returns the default value
+        """
+        if type(attribute) is not str:
+            raise TypeError(
+                f'Attribute is not a string. Received: {attribute} ({type(attribute)})'
+            )
+
+        if getattr(self, attribute, None):
+            return self.attribute
+        return default
 
 
 class Packet():
 
-    def __init__(self, target: Host, source: Host, info: Dict) -> None:
+    def __init__(self, target: Host, source: Host, details: PacketDetails) -> None:
         """ Packet class built-in initialiser
    
         Parameters:
         target (Host): Target Host packet will be sent to 
         source (Host): Source Host packet will pretend to be from
-        info (Dict): Dictionary containing packet information
+        details (PacketDetails): Dictionary containing packet information
         """
         self.packet = None
         self.target = valid_host(target)
         self.source = valid_host(source)
-        self.info = valid_packet_info(info)
-
-        for key, value in info.items():
-            setattr(self, key, value)
+        self.details = valid_packet_details(details)
 
     def add_ethernet_layer(self):
         """ Adds ethernet layer to packet attribute
@@ -36,8 +66,8 @@ class Packet():
         Returns:
         None: Returns None
         """
-        self.packet = Ether(src=self.source.mac, dst=self.target.mac, type=self.int_protocol)
-        if self.vlan:
+        self.packet = Ether(src=self.source.mac, dst=self.target.mac, type=self.details.int_protocol)
+        if self.details.vlan:
             self.packet /= Dot1Q(vlan=True)
         return
 
@@ -48,8 +78,8 @@ class Packet():
         None: Returns None
         """
         self.packet /= IP(src=self.source.ip, dst=self.target.ip)
-        if self.headers:
-            for key, value in self.ip_header.items():
+        if self.details.headers:
+            for key, value in self.details.ip_header.items():
                 setattr(self.packet, key, value)
         return
 
@@ -63,8 +93,8 @@ class Packet():
             self.packet /= UDP(sport=self.source.port, dport=self.target.port)
         elif self.is_tcp():
             self.packet /= TCP(sport=self.source.port, dport=self.target.port)
-            if self.headers:
-                for key, value in self.tcp_header.items():
+            if self.details.headers:
+                for key, value in self.details.tcp_header.items():
                     setattr(self.packet, key, value)
         return
 
@@ -74,7 +104,7 @@ class Packet():
         Returns:
         None: Returns None
         """
-        self.packet /= randstring(self.length)
+        self.packet /= randstring(self.details.length)
         return
 
     def add_all_layers(self):
@@ -102,22 +132,21 @@ class Packet():
         """ Checks if transport protocol is UDP
    
         Returns:
-        None: Returns None
+        Bool: Boolean if transport protocol is UDP
         """
-        return self.trans_protocol == TRANSPORT_PROTOCOLS_INFO['udp']['value']
+        return self.details.trans_protocol == TRANSPORT_PROTOCOLS_INFO['udp']['value']
 
     def is_tcp(self):
         """ Checks if transport protocol is TCP
    
         Returns:
-        None: Returns None
+        None: Boolean if transport protocol is TCP
         """
-        return self.trans_protocol == TRANSPORT_PROTOCOLS_INFO['tcp']['value']
+        return self.details.trans_protocol == TRANSPORT_PROTOCOLS_INFO['tcp']['value']
 
     def __str__(self):
         return f"Target:\n{self.target}\nSource:\n{self.source}\nInfo:\n" + \
-            "\n".join([f"{key}: {self.info[key]}" for key in self.info])
+            "\n".join([f"{key}: {self.details[key]}" for key in self.details])
 
     def repr(self):
-        return f"Object: {self.__class__.__name__} ({repr(self.target)}, {repr(self.source)}, {(self.packet)}, {self.info})"
-    
+        return f"Object: {self.__class__.__name__} ({repr(self.target)}, {repr(self.source)}, {(self.packet)}, {self.details})"
