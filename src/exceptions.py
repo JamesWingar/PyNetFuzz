@@ -8,6 +8,8 @@ class InvalidHostError(BaseValidationError):
     pass
 class InvalidPacketError(BaseValidationError):
     pass
+class InvalidPacketDetailsError(BaseValidationError):
+    pass
 class InvalidRandomiserError(BaseValidationError):
     pass
 
@@ -35,6 +37,14 @@ class PacketInfoLengthError(BaseValidationError):
 class PacketInfoMissingEntriesError(BaseValidationError):
     pass
 class PacketInfoExtraEntriesError(BaseValidationError):
+    pass
+
+#--- PACKET DETAILS EXCEPTIONS----
+class PacketDetailsTypeError(BaseValidationError):
+    pass
+class PacketDetailsAttributeError(BaseValidationError):
+    pass
+class PacketDetailsMissingEntriesError(BaseValidationError):
     pass
 
 #--- RANDOMISER EXCEPTIONS----
