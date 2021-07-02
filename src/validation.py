@@ -15,6 +15,7 @@ from src.const import (
 
 if TYPE_CHECKING:
     from src.hosts import Host
+    from src.packet import PacketDetails
 
 
 def valid_specific_IP(string: str, min: int=7, max: int= 17) -> str:
@@ -218,16 +219,62 @@ def valid_host(host: Host) -> Host:
     return host
 
 
+def valid_packet_details(details: PacketDetails) -> PacketDetails:
+    """ Validation test for valid packet details
+
+    Parameters:
+    details (PacketDetails): PacketDetails object containing packet details as attributes
+
+    Returns:
+    PacketDetails: Valid PacketDetails object
+    """
+    from src.packet import PacketDetails
+    must_contain = ['int_protocol', 'trans_protocol', 'cast', 'length', \
+                    'vlan', 'headers', 'min_packet', 'max_packet']
+
+    if not isinstance(details, PacketDetails):
+        raise ex.InvalidPacketDetailsError(
+            f'Not a valid instace of PacketDetails. Received: {details} type({type(details)})'
+        )
+
+    for key in must_contain:
+        if not hasattr(details, key):
+            raise ex.PacketDetailsAttributeError(
+            f'Packet details does not have the correct minimal entries. '
+            f'Missing: {key}, Requires: {must_contain}'
+        )
+        
+    if details.get('headers', None):
+        must_contain.append('ip_header')
+        if int(details.get('trans_protocol')) == int(TRANSPORT_PROTOCOLS_INFO['tcp']['value']):
+            must_contain.append('tcp_header')
+
+    must_contain_set = set(must_contain)
+    details_attr_set = set()
+    for key in must_contain:
+        if hasattr(details, key):
+            details_attr_set.add(key)
+
+    if must_contain_set != details_attr_set:
+        if must_contain_set - details_attr_set:
+            raise ex.PacketDetailsMissingEntriesError(
+                f'Packet details has missing values: {must_contain_set - details_attr_set}'
+            )
+
+    return details
+
+
 def valid_packet_info(info: Dict) -> Dict:
     """ Validation test for valid packet info
 
     Parameters:
-    info (Dict): Info dictionary contain key,value pairs
+    info (Dict): dictionary containing required key,value pairs
 
     Returns:
     dict: Valid packet info dictionary object
     """
-    must_contain = ['int_protocol', 'trans_protocol', 'cast', 'length', 'vlan', 'headers']
+    must_contain = ['int_protocol', 'trans_protocol', 'cast', 'length', \
+                    'vlan', 'headers', 'min_packet', 'max_packet']
 
     if type(info) is not dict:
         raise ex.PacketInfoTypeError(
@@ -236,23 +283,6 @@ def valid_packet_info(info: Dict) -> Dict:
         )
 
     info_keys_set = set(info.keys())
-    for key in must_contain:
-        if key not in info_keys_set:
-            raise ex.PacketInfoKeysError(
-            f'Packet info does not have the correct minimal entries. '
-            f'Received: {info_keys_set}, Requires: {must_contain}'
-        )
-    
-    if info['headers']:
-        must_contain.append('ip_header')
-        if int(info['trans_protocol']) == int(TRANSPORT_PROTOCOLS_INFO['tcp']['value']):
-            must_contain.append('tcp_header')
-
-    if len(must_contain) != len(info):
-        raise ex.PacketInfoLengthError(
-            f'{must_contain}'
-            f'Packet info received unexpected number of values, {len(info)}. Expected {len(must_contain)}'
-        )
     must_contain_set = set(must_contain)
     if must_contain_set != info_keys_set:
         if must_contain_set - info_keys_set:
@@ -263,6 +293,7 @@ def valid_packet_info(info: Dict) -> Dict:
             raise ex.PacketInfoExtraEntriesError(
                 f'Packet info has incorrect values: {info_keys_set - must_contain_set}'
             )
+
     return info
 
 
