@@ -219,18 +219,20 @@ def valid_host(host: Host) -> Host:
     return host
 
 
-def valid_packet_details(details: PacketDetails) -> PacketDetails:
-    """ Validation test for valid packet details
+def valid_packet_details(details: PacketDetails, must_contain: List=None) -> PacketDetails:
+    """ Validation test for valid intial (before randomising) packet details
 
     Parameters:
-    details (PacketDetails): PacketDetails object containing packet details as attributes
+    details (PacketDetails): PacketDetails object containing initial packet
+                            details as attributes before being randomised
 
     Returns:
     PacketDetails: Valid PacketDetails object
     """
     from src.packet import PacketDetails
-    must_contain = ['int_protocol', 'trans_protocol', 'cast', 'length', \
-                    'vlan', 'headers', 'min_packet', 'max_packet']
+    if not must_contain:
+        must_contain = ['int_protocol', 'trans_protocol', 'cast', \
+                        'vlan', 'headers', 'min_length', 'max_length']
 
     if not isinstance(details, PacketDetails):
         raise ex.InvalidPacketDetailsError(
@@ -243,6 +245,24 @@ def valid_packet_details(details: PacketDetails) -> PacketDetails:
             f'Packet details does not have the correct minimal entries. '
             f'Missing: {key}, Requires: {must_contain}'
         )
+    return details
+
+
+def valid_complete_packet_details(details: PacketDetails) -> PacketDetails:
+    """ Validation test for a valid complete packet details (All requirements for a Packet)
+
+    Parameters:
+    details (PacketDetails): A complete PacketDetails object containing all
+                            required details to create a packet as attributes
+
+    Returns:
+    PacketDetails: Valid PacketDetails object
+    """
+    
+    must_contain = ['int_protocol', 'trans_protocol', 'cast', \
+                    'vlan', 'headers', 'length']
+
+    details = valid_packet_details(details, must_contain)
         
     if details.get('headers', None):
         must_contain.append('ip_header')
@@ -260,7 +280,6 @@ def valid_packet_details(details: PacketDetails) -> PacketDetails:
             raise ex.PacketDetailsMissingEntriesError(
                 f'Packet details has missing values: {must_contain_set - details_attr_set}'
             )
-
     return details
 
 
@@ -273,8 +292,8 @@ def valid_packet_info(info: Dict) -> Dict:
     Returns:
     dict: Valid packet info dictionary object
     """
-    must_contain = ['int_protocol', 'trans_protocol', 'cast', 'length', \
-                    'vlan', 'headers', 'min_packet', 'max_packet']
+    must_contain = ['int_protocol', 'trans_protocol', 'cast', 'vlan', \
+                    'headers', 'min_length', 'max_length']
 
     if type(info) is not dict:
         raise ex.PacketInfoTypeError(
@@ -293,7 +312,6 @@ def valid_packet_info(info: Dict) -> Dict:
             raise ex.PacketInfoExtraEntriesError(
                 f'Packet info has incorrect values: {info_keys_set - must_contain_set}'
             )
-
     return info
 
 
