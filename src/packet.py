@@ -9,13 +9,13 @@ from src.const import (
 from src.validation import (
     valid_host,
     valid_packet_info,
-    valid_packet_details,
+    valid_complete_packet_details,
 )
 
 
 class PacketDetails():
 
-    def init(self, info: Dict):
+    def __init__(self, info: Dict):
         """ PacketDetails class built-in initialiser
    
         Parameters:
@@ -37,12 +37,33 @@ class PacketDetails():
         """
         if type(attribute) is not str:
             raise TypeError(
-                f'Attribute is not a string. Received: {attribute} ({type(attribute)})'
+                f'Attribute given is not a string. Received: {attribute} ({type(attribute)})'
             )
-
-        if getattr(self, attribute, None):
-            return self.attribute
+        
+        value = getattr(self, attribute, None)
+        if value:
+            return value
         return default
+
+    def set(self, attribute: str, value: Any) -> Any:
+        """ Attempts to set a attribute
+   
+        Parameters:
+        attribute (str): attribute name to retrieve
+        value (Any): value of the attribute
+        """
+        if type(attribute) is not str:
+            raise TypeError(
+                f'Attribute given is not a string. Received: {attribute} ({type(attribute)})'
+            )
+        setattr(self, attribute, value)
+
+    def __str__(self) -> str:
+        return "({})".format(",".join([f"{key}: {self.info[key]}" for key in self.info]))
+
+    def repr(self) -> str:
+        return f"Object: {self.__class__.__name__} ({self.info})"
+
 
 
 class Packet():
@@ -58,7 +79,7 @@ class Packet():
         self.packet = None
         self.target = valid_host(target)
         self.source = valid_host(source)
-        self.details = valid_packet_details(details)
+        self.details = valid_complete_packet_details(details)
 
     def add_ethernet_layer(self):
         """ Adds ethernet layer to packet attribute
@@ -144,9 +165,8 @@ class Packet():
         """
         return self.details.trans_protocol == TRANSPORT_PROTOCOLS_INFO['tcp']['value']
 
-    def __str__(self):
-        return f"Target:\n{self.target}\nSource:\n{self.source}\nInfo:\n" + \
-            "\n".join([f"{key}: {self.details[key]}" for key in self.details])
+    def __str__(self) -> str:
+        return f"Target:({self.target})\nSource:({self.source})\nDetails:({self.details})"
 
-    def repr(self):
-        return f"Object: {self.__class__.__name__} ({repr(self.target)}, {repr(self.source)}, {(self.packet)}, {self.details})"
+    def repr(self) -> str:
+        return f"Object: {self.__class__.__name__} ({repr(self.target)}, {repr(self.source)}, {repr(self.details)}, {(self.packet)})"
