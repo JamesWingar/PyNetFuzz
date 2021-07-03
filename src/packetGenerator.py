@@ -1,4 +1,5 @@
 #Python library imports
+from copy import deepcopy
 
 # Package imports
 from src.randomiser import Randomiser
@@ -17,7 +18,7 @@ def packet_generator(target: Host, details: PacketDetails, source: Host=Host(Non
    
         Parameters:
         target (Host): Host object containing information for packet generation
-        packet_details (PacketDetails): Object contains required details for packet generation
+        details (PacketDetails): Object contains required details for packet generation
         source (Host): Optional Host object for packet generation
         seed (int): Value for Randomiser to create Suedo-random numbers
         max_packets (int): Value for max packets to be created from a single generator
@@ -25,16 +26,20 @@ def packet_generator(target: Host, details: PacketDetails, source: Host=Host(Non
         Returns:
         Packet: Yields a created randomised packet 
     """
-    target = valid_host(target)
+    target = target #TODO: check? (Not randomised some )
     details = valid_packet_details(details)
     randomiser = Randomiser(seed)
 
+    random_target = deepcopy(target)
+    random_source = deepcopy(source)
+    random_details = deepcopy(details)
+
     for _ in range(max_packets):     
         # randomise hosts   
-        random_target = randomiser.host(target) 
-        random_source = randomiser.host(source)
+        random_target = randomiser.host(target, random_target) 
+        random_source = randomiser.host(source, random_source)
         # randomise packet info
-        random_details = randomiser.packet_details(details, details.min_length, details.max_length) 
+        random_details = randomiser.packet_details(details, random_details, details.min_length, details.max_length) 
 
         # create packet
         packet = Packet(random_target, random_source, random_details)

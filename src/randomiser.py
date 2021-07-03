@@ -69,80 +69,101 @@ class Randomiser():
         """
         return self.bit_16()
 
-    def host(self, host: Host) -> Host:
+    def host(self, host: Host, random_host: Host) -> Host:
         """ Generate a randomised host from a given Host object
    
         Parameters:
-        host (Host): Host object to be randomised
+        host (Host): Host object containing host info
+        random_host (Host): Host object to be randomised
     
         Returns:
-        Host: Randomised Host object
+        random_host: Randomised Host object
         """
-        host.ip = self.ip(host.ip) if host.is_ip() else self.ip()
+        random_host.ip = self.ip(host.ip) if host.is_ip() else self.ip()
         if not host.is_mac():
-            host.mac = self.mac()
+            random_host.mac = self.mac()
         if not host.is_port():
-            host.port = self.port()
+            random_host.port = self.port()
 
-        return host
+        return random_host
 
-    def packet_details(self, pkt_details: PacketDetails, min_length: int=0, max_length: int=None):
+    def packet_details(self, details: PacketDetails, random_details: PacketDetails, min_length: int=0, max_length: int=None):
         """ Generate randomised packet details from a given PacketDetails object
    
         Parameters:
-        pkt_details (PacketDetails): PacketDetails object to be randomised
+        details (PacketDetails): PacketDetails object containing given packet details
+        random_details (PacketDetails): PacketDetails object to be randomised
         min_length (int): Minimum length of IP address
         max_length (int): Maximum length of IP address
     
         Returns:
-        pkt_details (PacketDetails): Randomised PacketDetails object
+        random_details (PacketDetails): Randomised PacketDetails object
         """
         int_str = self.choose(INTERNET_PROTOCOLS)
         trans_str = self.choose(TRANSPORT_PROTOCOLS)
 
-        packet_info = {
-            'int_protocol': pkt_details.get('int_protocol', \
-                INTERNET_PROTOCOLS_INFO[int_str]['value']),
-            'trans_protocol': pkt_details.get('trans_protocol', \
-                TRANSPORT_PROTOCOLS_INFO[trans_str]['value']),
-            'cast': pkt_details.get('cast', self.choose(CAST_TYPES)),
-            'vlan': pkt_details.get('vlan', None),
-            'headers': pkt_details.get('headers', None),
-        }
+        random_details.int_protocol = details.get(
+            'int_protocol',
+            INTERNET_PROTOCOLS_INFO[int_str]['value']
+        )
+        random_details.trans_protocol = details.get(
+            'trans_protocol',
+            TRANSPORT_PROTOCOLS_INFO[trans_str]['value']
+        )
+        random_details.cast = details.get(
+            'cast',
+            self.choose(CAST_TYPES)
+        )
+        random_details.vlan = details.get(
+            'vlan', False
+        )
+        random_details.headers = details.get(
+            'headers', False
+        )
 
+        if not min_length:
+            min_length = 0
         if not max_length:
             max_length = INTERNET_PROTOCOLS_INFO[int_str]['max_length'] - \
                             INTERNET_PROTOCOLS_INFO[int_str]['header_length'] - \
                             TRANSPORT_PROTOCOLS_INFO[trans_str]['header_length']
-        packet_info['length'] = self.rand(min_length, max_length)
+        random_details.set('length', self.rand(min_length, max_length))
 
-        if pkt_details.get('headers', None):
+        if random_details.get('headers', None):
             # Randomise IP header
-            if packet_info.get('int_protocol') == INTERNET_PROTOCOLS_INFO['ipv6']['value']:
-                packet_info['ip_header'] = { #ipv6
-                    'tc': self.bit_8(), # Traffic class
-                    'fl': self.bit_20(), # Flow Label
-                    'hlim': self.bit_8(), # Identification
-                }
+            if random_details.get('int_protocol') == INTERNET_PROTOCOLS_INFO['ipv6']['value']:
+                random_details.set(
+                    'ip_header',
+                    { #ipv6
+                        'tc': self.bit_8(), # Traffic class
+                        'fl': self.bit_20(), # Flow Label
+                        'hlim': self.bit_8(), # Identification
+                    }
+                )
             else:
-                packet_info['ip_header'] = { #ipv4 or jumbo 
-                    'ttl': self.bit_8(), # TTL 
-                    'tos': self.bit_8(), # DSCP
-                    'flags': self.bit_3(), # Flags
-                    'frag': self.bit_13(), # Fragmentation offset
-                    'id': self.bit_16(), # Identification
-                }
-
+                random_details.set(
+                    'ip_header',
+                    { #ipv4 or jumbo 
+                        'ttl': self.bit_8(), # TTL 
+                        'tos': self.bit_8(), # DSCP
+                        'flags': self.bit_3(), # Flags
+                        'frag': self.bit_13(), # Fragmentation offset
+                        'id': self.bit_16(), # Identification
+                    }
+                )
             # Random TCP header
-            if packet_info.get('trans_protocol') == TRANSPORT_PROTOCOLS_INFO['tcp']['value']:
-                packet_info['tcp_header'] = {
+            if random_details.get('trans_protocol') == TRANSPORT_PROTOCOLS_INFO['tcp']['value']:
+                random_details.set(
+                    'tcp_header',
+                    {
                     'seq': self.bit_32(), # sequence number
                     'ack': self.bit_32(), # Acknowledgment number
                     'window': self.bit_16(), # Window size
                     'urgptr': self.bit_16(), # urgent pointer
-                }
+                    }
+                )
 
-        return packet_info
+        return random_details
 
     def boolean(self) -> bool:
         """ Generate a boolean value
