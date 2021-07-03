@@ -26,8 +26,8 @@ def main():
         'cast': args.cast,
         'headers': args.headers,
         'vlan': args.vlan,
-        'min_packet': args.min_packet,
-        'max_packet': args.max_packet,
+        'min_length': args.min_length,
+        'max_length': args.max_length,
     })
 
     # Packet count

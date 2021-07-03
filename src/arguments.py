@@ -49,9 +49,9 @@ def parse_args(args=None):
     parser.add_argument(
         '-vl', '--vlan', help='adds vlan tag', action='store_true')
     parser.add_argument(
-        '-min', '--min_packet', help='Specify minimum packet length (default: Ethertype minimum)', type=validate_packet_length_int, metavar='')
+        '-min', '--min_length', help='Specify minimum packet length (default: Ethertype minimum)', type=validate_packet_length_int, metavar='')
     parser.add_argument(
-        '-max', '--max_packet', help='Specify maximum packet length (default: Ethertype maximum)', type=validate_packet_length_int, metavar='')
+        '-max', '--max_length', help='Specify maximum packet length (default: Ethertype maximum)', type=validate_packet_length_int, metavar='')
     parser.add_argument(
         '-s', '--seed', help='Specify seed to generate packets (default: Random seed)', type=validate_positive_int, metavar='')
 
