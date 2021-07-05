@@ -20,9 +20,9 @@ from src.const import (
 )
 
 from src.validation import (
-    valid_host,
-    valid_packet_info,
+    valid_scope_IP,
     valid_seed,
+    valid_number,
 )
 
 
@@ -48,10 +48,7 @@ class Randomiser():
         Returns:
         str: Randomised IP address string
         """
-        if not type(ip_str) == str:
-            raise TypeError('IP address string must be a string.')
-        if not re.search(REGEX_SCOPE_IP, ip_str):
-            raise ValueError('IP address string must be a valid IP address eg. X.X.X.X')
+        ip_str = valid_scope_IP(ip_str)
 
         return '.'.join([str(self.bit_8()) if byte == '*' else byte for byte in ip_str.split('.')])
 
@@ -175,8 +172,8 @@ class Randomiser():
         """
         return random.randint(0, 1) == 1
 
-    def type(self, length: int) -> int:
-        """ Generate a randomised type from Length
+    def index(self, length: int) -> int:
+        """ Generate a randomised index from Length
    
         Parameters:
         length (int): Positive integer to randomise as max value
@@ -184,10 +181,7 @@ class Randomiser():
         Returns:
         int: Randomised integer from 0 to length parameter
         """
-        if not type(length) == int:
-            raise TypeError('Length must be an integer.')
-        if not length > 0:
-            raise ValueError('Length must be a positive integer.')
+        length = valid_number(length, min=0)
 
         return random.randint(0, length - 1)
 

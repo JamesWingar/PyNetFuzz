@@ -345,3 +345,40 @@ def valid_seed(value: int, min: int=0, max: int=sys.maxsize) -> int:
             f'It must be an integer between {min} and {max}'
         )
     return value
+
+
+def valid_number(value: int, min: int=0, max: int=sys.maxsize) -> int:
+    """ Validation test for valid seed
+
+    Parameters:
+    value (Any): value as a convertable datatype (str/int/float)
+    min (int): Minimum Seed value
+    max (int): Maximum Seed value
+
+    Returns:
+    int: Valid Seed value
+    """
+    if value is None:
+        return value
+
+    if type(value) not in [str, float, int]:
+        raise ex.IntegerInvalidTypeError(
+            f'Not a valid number type. Received: {value} ({type(value)})'
+        )
+    try:
+        value = int(value)
+    except ValueError as e:
+        raise ex.IntegerInvalidFormatError(
+            f'Not a valid number format. Received: {value}'
+        )
+    if value < min:
+        raise ex.IntegerTooSmallError(
+            f'Number value too small, not a valid value. (Value={value})'
+            f'It must be an integer between {min} and {max}'
+        )
+    if value > max:
+        raise ex.IntegerTooLargeError(
+            f'Number value too large, not a valid value. (Value={value})'
+            f'It must be an integer between {min} and {max}'
+        )
+    return value
