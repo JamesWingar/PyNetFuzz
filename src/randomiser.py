@@ -28,12 +28,14 @@ from src.validation import (
 
 class Randomiser():
 
-    def __init__(self, seed: int=int(time())) -> None:
+    def __init__(self, seed: int=None) -> None:
         """ Randomiser class built-in initialiser
     
         Parameters:
         seed (int): Integer for Suedo-random numbers to be seed from
         """
+        if not seed:
+            seed = int(time())
         self.seed = valid_seed(seed)
         random.seed(seed)
     
