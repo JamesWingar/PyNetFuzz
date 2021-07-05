@@ -44,11 +44,12 @@ def main():
 
             # send new packet
             packet.send(args.network_interface)
-
+            packet_count += 1
+            
             # Log packet
             #TODO
 
-            if packet_count < args.n_packets:
+            if args.n_packets < packet_count:
                 break
 
         # confirm target is online
