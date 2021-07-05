@@ -133,11 +133,13 @@ class StringInvalidFormatError(BaseValidationError):
     pass
 
 # Integer
+class IntegerInvalidTypeError(BaseValidationError):
+    pass
+class IntegerInvalidFormatError(BaseValidationError):
+    pass
 class IntegerTooLargeError(BaseValidationError):
     pass
 class IntegerTooSmallError(BaseValidationError):
-    pass
-class IntegerInvalidFormatError(BaseValidationError):
     pass
 class IntegerMustBePositiveError(BaseValidationError):
     pass
