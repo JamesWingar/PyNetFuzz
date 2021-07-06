@@ -9,7 +9,6 @@ from src.const import (
     PACKETS_PER_SEED,
 )
 from src.validation import (
-    valid_host,
     valid_packet_details,
 )
 
@@ -46,6 +45,6 @@ def packet_generator(target: Host, details: PacketDetails, source: Host=Host(Non
         packet.add_all_layers()
         
         # output created packet
-        print(f"Packet #{_}: {packet}")
+        print(f"Generator Packet #{_}: {packet}")
 
         yield packet

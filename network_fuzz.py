@@ -49,6 +49,7 @@ def main():
             # Log packet
             #TODO
 
+            # break condition
             if args.n_packets < packet_count:
                 break
 
