@@ -26,59 +26,45 @@ def parse_args(args=None):
         epilog='For more detail go to the ReadMe file in main directory.')
 
     # Positional arguments
-    parser.add_argument(
-        'target_ip', help='IP address of target on network', type=check_arg_specific_ip)
-    parser.add_argument(
-        'network_interface', help='Name of the interface connected to the local network',
+    parser.add_argument('target_ip', help='IP address of target on network', type=check_arg_specific_ip)
+    parser.add_argument('network_interface', help='Name of the interface connected to the local network',
             type=check_arg_name)
     parser.add_argument(
         'n_packets', help='Number of packets to be sent', type=check_arg_positive_int)
 
     # Optional arguments
-    parser.add_argument(
-        '-sip', '--source_ip', help='IP address of source on network (default: Random)',
+    parser.add_argument('-sip', '--source_ip',
+        help='IP address of source on network (default: Random)',
         type=check_arg_scope_ip, metavar='')
-    parser.add_argument(
-        '-tm', '--target_mac',
+    parser.add_argument('-tm', '--target_mac',
         help='MAC address of target on network [Self / valid MAC address] (default: Random)',
         type=check_arg_mac, metavar='')
-    parser.add_argument(
-        '-sm', '--source_mac',
+    parser.add_argument('-sm', '--source_mac',
         help='MAC address of source on network [Self / valid MAC address] (default: Random)',
         type=check_arg_mac, metavar='')
-    parser.add_argument(
-        '-t_p', '--target_port',help='Port of target on network (default: Random)',
-        type=check_arg_port, metavar='')
-    parser.add_argument(
-        '-s_p', '--source_port', help='Port of source on network (default: Random)',
-        type=check_arg_port, metavar='')
-    parser.add_argument(
-        '-ip', '--int_protocol',
+    parser.add_argument('-t_p', '--target_port',
+        help='Port of target on network (default: Random)', type=check_arg_port, metavar='')
+    parser.add_argument('-s_p', '--source_port',
+        help='Port of source on network (default: Random)', type=check_arg_port, metavar='')
+    parser.add_argument('-ip', '--int_protocol',
         help='Specify the internet protocol [IPv4 / IPv6] (default: Random)',
         type=check_arg_iprotocol, metavar='')
-    parser.add_argument(
-        '-tp', '--trans_protocol',
+    parser.add_argument('-tp', '--trans_protocol',
         help='Specify the transport protocol [TCP / UDP] (default: Random)',
         type=check_arg_tprotocol, metavar='')
-    parser.add_argument(
-        '-c', '--cast',
+    parser.add_argument('-c', '--cast',
         help='Specify cast types [unicast / multicast / broadcast] (default: Random)',
         type=check_arg_cast, metavar='')
-    parser.add_argument(
-        '-hd', '--headers',
+    parser.add_argument('-hd', '--headers',
         help='Disable randomised headers (default: Random)', action='store_false')
-    parser.add_argument(
-        '-vl', '--vlan', help='adds vlan tag', action='store_true')
-    parser.add_argument(
-        '-min', '--min_length',
+    parser.add_argument('-vl', '--vlan', help='adds vlan tag', action='store_true')
+    parser.add_argument('-min', '--min_length',
         help='Specify minimum packet length (default: Ethertype minimum)',
         type=check_arg_packet_length_int, metavar='')
-    parser.add_argument(
-        '-max', '--max_length',
+    parser.add_argument('-max', '--max_length',
         help='Specify maximum packet length (default: Ethertype maximum)',
         type=check_arg_packet_length_int, metavar='')
-    parser.add_argument(
-        '-s', '--seed',
+    parser.add_argument('-s', '--seed',
         help='Specify seed to generate packets (default: Random seed)',
         type=check_arg_positive_int, metavar='')
 
@@ -94,7 +80,7 @@ def check_arg_specific_ip(string: str) -> str:
     Returns:
         string (str): Valid string in correct form
     """
-    if len(string) > 17 or len(string) < 7 or isinstance(string, str) or \
+    if len(string) > 17 or len(string) < 7 or not isinstance(string, str) or \
             not re.search(const.REGEX_SPECIFIC_IP, string):
         raise argparse.ArgumentTypeError(
             'Not a valid IP address. Required to be in standard format X.X.X.X'
@@ -111,7 +97,7 @@ def check_arg_scope_ip(string: str) -> str:
     Returns:
         string (str): Valid string in correct form
     """
-    if len(string) > 17 or len(string) < 7 or isinstance(string, str) or \
+    if len(string) > 17 or len(string) < 7 or not isinstance(string, str) or \
             not re.search(const.REGEX_SCOPE_IP, string):
         raise argparse.ArgumentTypeError(
             'Not a valid IP address. Required to be in standard format X.X.X.X'
@@ -128,7 +114,7 @@ def check_arg_name(string: str) -> str:
     Returns:
         string (str): Valid string in correct form
     """
-    if len(string) > 31 or len(string) < 1 or isinstance(string, str):
+    if len(string) > 31 or len(string) < 1 or not isinstance(string, str):
         raise argparse.ArgumentTypeError(
             'Name is required to be between 0 and 32 characters.'
         )
@@ -144,11 +130,10 @@ def check_arg_mac(string: str) -> str:
     Returns:
         string (str): Valid string in correct form
     """
-    string = string.lower()
-    if string == 'self':
-        return string
+    if string.lower() == 'self':
+        return string.lower()
 
-    if len(string) > 17 or len(string) < 12 or isinstance(string, str) or \
+    if len(string) > 17 or len(string) < 12 or not isinstance(string, str) or \
             not re.search(const.REGEX_MAC, string):
         raise argparse.ArgumentTypeError(
             'Not a valid MAC address. Required to be in a standard format '\
@@ -166,7 +151,7 @@ def check_arg_iprotocol(string: str) -> int:
     Returns:
         value (int): Valid sex value of internet protocol
     """
-    if len(string) > 5 or isinstance(string, str) or \
+    if len(string) > 5 or not isinstance(string, str) or \
             string.lower() not in const.INTERNET_PROTOCOLS:
         raise argparse.ArgumentTypeError(
             'Not a supported internet protocol input. Required to be IPv4, IPv6 or Jumbo'
@@ -183,7 +168,7 @@ def check_arg_tprotocol(string: str) -> int:
     Returns:
         value (int): Valid hex value of transport protocol
     """
-    if len(string) > 3 or isinstance(string, str) or \
+    if len(string) > 3 or not isinstance(string, str) or \
             string.lower() not in const.TRANSPORT_PROTOCOLS:
         raise argparse.ArgumentTypeError(
             'Not a supported transport protocol input. Required to be either UDP or TCP'
@@ -223,7 +208,7 @@ def check_arg_cast(string: str) -> str:
     Returns:
         str (str): Valid cast type option
     """
-    if isinstance(string, str) or string.lower() not in const.CAST_TYPES:
+    if not isinstance(string, str) or string.lower() not in const.CAST_TYPES:
         raise argparse.ArgumentTypeError(
             'Not a supported cast type input. Required to be either unicast, multicast or broadcast'
         )
