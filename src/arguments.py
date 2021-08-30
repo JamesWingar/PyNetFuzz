@@ -26,9 +26,10 @@ def parse_args(args=None):
         epilog='For more detail go to the ReadMe file in main directory.')
 
     # Positional arguments
-    parser.add_argument('target_ip', help='IP address of target on network', type=check_arg_specific_ip)
-    parser.add_argument('network_interface', help='Name of the interface connected to the local network',
-            type=check_arg_name)
+    parser.add_argument('target_ip', help='IP address of target on network',
+        type=check_arg_specific_ip)
+    parser.add_argument('network_interface',
+        help='Name of the interface connected to the local network', type=check_arg_name)
     parser.add_argument(
         'n_packets', help='Number of packets to be sent', type=check_arg_positive_int)
 
