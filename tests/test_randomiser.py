@@ -1,39 +1,36 @@
+"""
+Unit tests for Randomiser class
+"""
 import unittest
-from src import const
+import src.exceptions as ex
 
 # Module under test
 from src.randomiser import Randomiser
 
-
 # Testing the Randomiser Class
 class TestRandomiser(unittest.TestCase):
+    """Testing Randomiser class and methods"""
 
-    def test_init(self):
+    def test_valid_init(self):
+        """Test valid initialising parameters"""
         # Correct random seed initialisation test
         self.assertEqual(Randomiser(1).seed, 1)
         self.assertEqual(type(Randomiser().seed), int)
+        self.assertEqual(Randomiser(9234.7103).seed, 9234)
         self.assertEqual(Randomiser(1934580).seed, 1934580)
-        self.assertEqual(Randomiser(-192200949580).seed, -192200949580)
 
+    def test_invalid_init(self):
+        """Test invalid initialising parameters"""
         # Incorrect argument datatype tests
-        with self.assertRaises(TypeError) as exception:
-            Randomiser(23.176)
-        with self.assertRaises(TypeError) as exception:
-            Randomiser(9234.7103)
-        with self.assertRaises(TypeError) as exception:
-            Randomiser(False)
-        with self.assertRaises(TypeError) as exception:
+        with self.assertRaises(ex.SeedInvalidValueError):
+            Randomiser(-192200949580)
+        with self.assertRaises(ex.SeedInvalidFormatError):
             Randomiser("hello")
-        with self.assertRaises(TypeError) as exception:
-            Randomiser("1")
-        with self.assertRaises(TypeError) as exception:
-            Randomiser("/0-/23-/")
 
-
-    def test_ip(self):
+    def test_valid_ip(self):
+        """Test valid ip randomise method"""
         # Random int (0-255) Sequence: 68 32 130 60 253 230 241 194
         seed = 1
-
         # Correct random IP generation
         self.assertEqual(Randomiser(seed).ip("192.168.1.24"), "192.168.1.24")
         self.assertEqual(Randomiser(seed).ip("192.168.1.*"), "192.168.1.68")
@@ -43,97 +40,91 @@ class TestRandomiser(unittest.TestCase):
         self.assertEqual(Randomiser(seed).ip(), "68.32.130.60")
         self.assertEqual(Randomiser(seed).ip(), Randomiser(seed).ip("*.*.*.*"))
 
+    def test_invalid_ip(self):
+        """Test invalid ip randomise method"""
+        # Random int (0-255) Sequence: 68 32 130 60 253 230 241 194
+        seed = 1
         # Incorrect argument datatype tests
-        with self.assertRaises(TypeError) as exception:
+        with self.assertRaises(ex.IpAddressInvalidTypeError):
             Randomiser(seed).ip(1)
-        with self.assertRaises(TypeError) as exception:
+        with self.assertRaises(ex.IpAddressInvalidTypeError):
             Randomiser(seed).ip(123.456)
-        with self.assertRaises(TypeError) as exception:
+        with self.assertRaises(ex.IpAddressInvalidTypeError):
             Randomiser(seed).ip(False)
-
         # Incorrect String Form tests
-        with self.assertRaises(ValueError) as exception:
+        with self.assertRaises(ex.IpScopeAddressInvalidFormatError):
             Randomiser(seed).ip("Marilyn Monroe")
-        with self.assertRaises(ValueError) as exception:
-            Randomiser(seed).ip("39wrnvkdsnv.4903wr.fosief. 309")
-        with self.assertRaises(ValueError) as exception:
+        with self.assertRaises(ex.IpScopeAddressInvalidFormatError):
             Randomiser(seed).ip("123-123.123.123")
-        with self.assertRaises(ValueError) as exception:
+        with self.assertRaises(ex.IpScopeAddressInvalidFormatError):
             Randomiser(seed).ip("58.129.245")
-        with self.assertRaises(ValueError) as exception:
+        with self.assertRaises(ex.IpScopeAddressInvalidFormatError):
             Randomiser(seed).ip("198.63.154.256")
-
+        with self.assertRaises(ex.IpAddressTooLongValueError):
+            Randomiser(seed).ip("39wrnvkdsnv.4903wr.fosief.309")
 
     def test_mac(self):
+        """Test mac address randomise method"""
         seeds = {
-            # Random int (0-255) Sequence (dec): 231 238 231 97 94
-            # Random int (0-255) Sequence (hex): E7 EE E7 61 5E
+            # Seed: 11 - Random int (0-255) Sequence (dec): 231 238 231 97 94
+            # Seed: 11 - Random int (0-255) Sequence (hex): E7 EE E7 61 5E
             11: "00:E7:EE:E7:61:5E",
-            # Random int (0-255) Sequence (dec): 84 214 214 144 245
-            # Random int (0-255) Sequence (hex): 54 D6 D6 90 F5
-            21: "00:54:D6:D6:90:F5", 
-            # Random int (0-255) Sequence (dec): 6 240 57 201 72
-            # Random int (0-255) Sequence (hex): 6 F0 39 C9 48
+            # Seed: 21 - Random int (0-255) Sequence (dec): 84 214 214 144 245
+            # Seed: 21 - Random int (0-255) Sequence (hex): 54 D6 D6 90 F5
+            21: "00:54:D6:D6:90:F5",
+            # Seed: 31 - Random int (0-255) Sequence (dec): 6 240 57 201 72
+            # Seed: 31 - Random int (0-255) Sequence (hex): 6 F0 39 C9 48
             31: "00:6:F0:39:C9:48",
-            # Random int (0-255) Sequence (dec): 195 170 118 85 197
-            # Random int (0-255) Sequence (hex): C3 AA 76 55 C5
+            # Seed: 41 - Random int (0-255) Sequence (dec): 195 170 118 85 197
+            # Seed: 41 - Random int (0-255) Sequence (hex): C3 AA 76 55 C5
             41: "00:C3:AA:76:55:C5",
-            # Random int (0-255) Sequence (dec): 124 82 125 118 130
-            # Random int (0-255) Sequence (hex): 7C 52 7D 76 82
+            # Seed: 51 - Random int (0-255) Sequence (dec): 124 82 125 118 130
+            # Seed: 51 - Random int (0-255) Sequence (hex): 7C 52 7D 76 82
             51: "00:7C:52:7D:76:82",
         }
         for seed, result in seeds.items():
             self.assertEqual(Randomiser(seed).mac(), result)
 
-
     def test_boolean(self):
-        # Random int (0-1) Sequence: 1 0 0 1 1
+        """Test bool value randomise method"""
+        # Seed: 61 - Random int (0-1) Sequence: 1 0 0 1 1
         seed, results = 61, [True, False, False, True, True]
-
         randomiser = Randomiser(seed)
         for result in results:
             self.assertEqual(randomiser.boolean(), result)
 
-
-    def test_type(self):
-        # Random int (0, length - 1)
-        seed = 71
+    def test_valid_index(self):
+        """Test valid index randomise method"""
+        seed = 71 # Random int (0, length - 1)
         randomiser = Randomiser(seed)
-        
-        # Correct random type generation
-        self.assertEqual(randomiser.type(100), 41)
-        self.assertEqual(randomiser.type(1), 0)
-        self.assertEqual(randomiser.type(1234), 542)
-        self.assertEqual(randomiser.type(9999), 2536)
-        self.assertEqual(randomiser.type(65535), 53880)
+        # Correct random index generation
+        self.assertEqual(randomiser.index(100), 41)
+        self.assertEqual(randomiser.index(1), 0)
+        self.assertEqual(randomiser.index(1234), 542)
+        self.assertEqual(randomiser.index(9999), 2536)
+        self.assertEqual(randomiser.index(65535), 53880)
 
+    def test_invalid_index(self):
+        """Test invalid index randomise method"""
+        seed = 71 # Random int (0, length - 1)
         # Incorrect argument datatype tests
-        with self.assertRaises(TypeError) as exception:
-            Randomiser(seed).type("Marilyn Monroe")
-        with self.assertRaises(TypeError) as exception:
-            Randomiser(seed).type(123.456)
-        with self.assertRaises(TypeError) as exception:
-            Randomiser(seed).type(False)
-
+        with self.assertRaises(ex.IntegerInvalidFormatError):
+            Randomiser(seed).index("Marilyn Monroe")
         # Incorrect argument value tests
-        with self.assertRaises(ValueError) as exception:
-            Randomiser(seed).type(0)
-        with self.assertRaises(ValueError) as exception:
-            Randomiser(seed).type(-10)
+        with self.assertRaises(ex.IntegerTooSmallError):
+            Randomiser(seed).index(-10)
 
-
-    def test_choose(self):
-        # Random int (0, length - 1) Sequence: 8 7 5 8 8
+    def test_valid_choose(self):
+        """Test valid choose randomise method"""
+        # Seed: 81 - Random int (0, length - 1) Sequence: 8 7 5 8 8
         seed_1 = 81
-        # Random int (0, length - 1) Sequence: 1 9 2 10 10
+        # Seed: 91 - Random int (0, length - 1) Sequence: 1 9 2 10 10
         seed_2 = 91
         test_list = [
             1, 2, 3,
             "Spaghetti", "Meatballs", "Lasagne",
             1.234, 2.345, 3.456,
-            False, True, False
-        ]
-
+            False, True, False]
         # Correct random choice generation
         randomiser = Randomiser(seed_1)
         self.assertEqual(randomiser.choose(test_list), 3.456)
@@ -141,7 +132,6 @@ class TestRandomiser(unittest.TestCase):
         self.assertEqual(randomiser.choose(test_list), "Lasagne")
         self.assertEqual(randomiser.choose(test_list), 3.456)
         self.assertEqual(randomiser.choose(test_list), 3.456)
-
         randomiser = Randomiser(seed_2)
         self.assertEqual(randomiser.choose(test_list), 2)
         self.assertEqual(randomiser.choose(test_list), False)
@@ -149,22 +139,23 @@ class TestRandomiser(unittest.TestCase):
         self.assertEqual(randomiser.choose(test_list), True)
         self.assertEqual(randomiser.choose(test_list), True)
 
+    def test_invalid_choose(self):
+        """Test invalid choose randomise method"""
+        seed = 81 # Random int (0, length - 1)
         # Incorrect argument datatype tests
-        with self.assertRaises(TypeError) as exception:
-            Randomiser(seed_1).choose(123.456)
-        with self.assertRaises(TypeError) as exception:
-            Randomiser(seed_1).choose(False)
-        with self.assertRaises(TypeError) as exception:
-            Randomiser(seed_1).choose({"Hello": 1})
-
+        with self.assertRaises(TypeError):
+            Randomiser(seed).choose(123.456)
+        with self.assertRaises(TypeError):
+            Randomiser(seed).choose(False)
+        with self.assertRaises(TypeError):
+            Randomiser(seed).choose({"Hello": 1})
         # Incorrect argument value tests
-        with self.assertRaises(ValueError) as exception:
-            Randomiser(seed_1).choose([])
+        with self.assertRaises(ValueError):
+            Randomiser(seed).choose([])
 
-    
-    def test_rand(self):
-        # Random int (min, max)
-        seed = 101
+    def test_valid_rand(self):
+        """Test valid choose randomise method"""
+        seed = 101  # Random int (min, max)
 
         # Correct random value generation
         randomiser = Randomiser(seed)
@@ -174,31 +165,29 @@ class TestRandomiser(unittest.TestCase):
         self.assertEqual(randomiser.rand(-1, 1), 1)
         self.assertEqual(randomiser.rand(-65535, -50051), -50397)
 
+    def test_invalid_rand(self):
+        """Test invalid choose randomise method"""
+        seed = 101  # Random int (min, max)
         # Incorrect argument datatype tests
-        with self.assertRaises(TypeError) as exception:
+        with self.assertRaises(TypeError):
             Randomiser(seed).rand("Marilyn Monroe", 1)
-        with self.assertRaises(TypeError) as exception:
+        with self.assertRaises(TypeError):
             Randomiser(seed).rand(2, 123.456)
-        with self.assertRaises(TypeError) as exception:
-            Randomiser(seed).rand(False, 3)
-        with self.assertRaises(TypeError) as exception:
+        with self.assertRaises(TypeError):
             Randomiser(seed).rand({"Hello": 1}, 2)
-        with self.assertRaises(TypeError) as exception:
+        with self.assertRaises(TypeError):
             Randomiser(seed).rand((5, 6), 4)
-
         # Incorrect argument value tests
-        with self.assertRaises(ValueError) as exception:
+        with self.assertRaises(ValueError):
             Randomiser(seed).rand(0, -5)
-        with self.assertRaises(ValueError) as exception:
+        with self.assertRaises(ValueError):
             Randomiser(seed).rand(-5, -100)
-        with self.assertRaises(ValueError) as exception:
+        with self.assertRaises(ValueError):
             Randomiser(seed).rand(70, 68)
 
-
     def test_bit(self):
-        # Random int (0, bit)
-        seed = 111
-
+        """Test bit randomise method"""
+        seed = 111 # Random int (0, bit)
         # Correct random choice generation
         randomiser = Randomiser(seed)
         self.assertEqual(randomiser.bit_32(), 913810597)
