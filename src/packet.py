@@ -1,25 +1,32 @@
+"""
+Contains packet related classes
+- Packet (packet builder and object)
+- PacketDetails (packet information storage class)
+"""
 # Python library imports
-from typing import Any, Dict
-from scapy.all import sendp, Ether, Dot1Q, IP, UDP, TCP, randstring
+from typing import Any
+from scapy.sendrecv import sendp
+from scapy.layers.l2 import Ether, Dot1Q
+from scapy.layers.inet import IP, UDP, TCP
+from scapy.utils import randstring
 # Package imports
 from src.hosts import Host
 from src.const import (
     TRANSPORT_PROTOCOLS_INFO,
 )
 from src.validation import (
-    valid_host,
-    valid_packet_info,
-    valid_complete_packet_details,
+    valid_host, valid_packet_info, valid_complete_packet_details
 )
 
 
 class PacketDetails():
+    """ Storage class for required packet information"""
 
-    def __init__(self, info: Dict):
+    def __init__(self, info: dict):
         """ PacketDetails class built-in initialiser
-   
+
         Parameters:
-        info (Dict): dict containing packet required info  
+            info (dict): dict containing packet required info
         """
         self.info = valid_packet_info(info)
         for key, value in info.items():
@@ -27,54 +34,50 @@ class PacketDetails():
 
     def get(self, attribute: str, default: Any=None) -> Any:
         """ Attempts to get the requested attribute
-   
+
         Parameters:
-        attribute (str): attribute name to retrieve
-        default (Any): fallback value should the attribute not exist
+            attribute (str): attribute name to retrieve
+            default (Any): fallback value should the attribute not exist
 
         Returns:
-        Any: Returns value of the attribute, otherwise returns the default value
+            Any: Returns value of the attribute, otherwise returns the default value
         """
-        if type(attribute) is not str:
+        if not isinstance(attribute, str):
             raise TypeError(
-                f'Attribute given is not a string. Received: {attribute} ({type(attribute)})'
-            )
-        
-        value = getattr(self, attribute, None)
-        if value:
-            return value
-        return default
+                f'Attribute given is not a string. Received: {attribute} ({type(attribute)})')
+        return getattr(self, attribute, default)
 
     def set(self, attribute: str, value: Any) -> Any:
         """ Attempts to set a attribute
-   
+
         Parameters:
-        attribute (str): attribute name to retrieve
-        value (Any): value of the attribute
+            attribute (str): attribute name to set
+            value (Any): value of the attribute
         """
-        if type(attribute) is not str:
+        if not isinstance(attribute, str):
             raise TypeError(
-                f'Attribute given is not a string. Received: {attribute} ({type(attribute)})'
-            )
+                f'Attribute given is not a string. Received: {attribute} ({type(attribute)})')
         setattr(self, attribute, value)
 
     def __str__(self) -> str:
-        return "({})".format(",".join([f"{key}: {self.info[key]}" for key in self.info]))
+        """Built-in str method"""
+        return "({})".format(",".join([f"{key}: {value}" for key, value in self.info.items()]))
 
-    def repr(self) -> str:
+    def __repr__(self) -> str:
+        """Built-in repr method"""
         return f"Object: {self.__class__.__name__} ({self.info})"
 
 
-
 class Packet():
+    """ Packet builder and utilities class"""
 
-    def __init__(self, target: Host, source: Host, details: PacketDetails) -> None:
+    def __init__(self, target: Host, source: Host, details: PacketDetails):
         """ Packet class built-in initialiser
-   
+
         Parameters:
-        target (Host): Target Host packet will be sent to 
-        source (Host): Source Host packet will pretend to be from
-        details (PacketDetails): Dictionary containing packet information
+            target (Host): Target Host packet will be sent to
+            source (Host): Source Host packet will pretend to be from
+            details (PacketDetails): Dictionary containing packet information
         """
         self.packet = None
         self.target = valid_host(target)
@@ -82,34 +85,21 @@ class Packet():
         self.details = valid_complete_packet_details(details)
 
     def add_ethernet_layer(self):
-        """ Adds ethernet layer to packet attribute
-   
-        Returns:
-        None: Returns None
-        """
-        self.packet = Ether(src=self.source.mac, dst=self.target.mac, type=self.details.int_protocol)
+        """ Adds ethernet layer to packet attribute"""
+        self.packet = Ether(
+            src=self.source.mac, dst=self.target.mac, type=self.details.int_protocol)
         if self.details.vlan:
             self.packet /= Dot1Q(vlan=True)
-        return
 
     def add_ip_layer(self):
-        """ Adds internet protocol layer to packet attribute
-   
-        Returns:
-        None: Returns None
-        """
+        """ Adds internet protocol layer to packet attribute"""
         self.packet /= IP(src=self.source.ip, dst=self.target.ip)
         if self.details.headers:
             for key, value in self.details.ip_header.items():
                 setattr(self.packet, key, value)
-        return
 
     def add_transport_layer(self):
-        """ Adds transport layer to packet attribute
-   
-        Returns:
-        None: Returns None
-        """
+        """ Adds transport layer to packet attribute"""
         if self.is_udp():
             self.packet /= UDP(sport=self.source.port, dport=self.target.port)
         elif self.is_tcp():
@@ -117,56 +107,43 @@ class Packet():
             if self.details.headers:
                 for key, value in self.details.tcp_header.items():
                     setattr(self.packet, key, value)
-        return
 
     def add_payload_layer(self):
-        """ Adds random payload to packet attribute
-   
-        Returns:
-        None: Returns None
-        """
+        """ Adds random payload to packet attribute"""
         self.packet /= randstring(self.details.length)
-        return
 
     def add_all_layers(self):
-        """ Adds all layers to packet attribute
-   
-        Returns:
-        None: Returns None
-        """
+        """ Adds all layers to packet attribute"""
         self.add_ethernet_layer()
         self.add_ip_layer()
         self.add_transport_layer()
         self.add_payload_layer()
-        return
 
     def send(self, iface, verbose=False):
-        """ Sends packet attribute
-   
-        Returns:
-        None: Returns None
-        """
+        """ Sends packet attribute"""
         sendp(self.packet, iface=iface, verbose=verbose)
-        return
-        
+
     def is_udp(self):
         """ Checks if transport protocol is UDP
-   
+
         Returns:
-        Bool: Boolean if transport protocol is UDP
+            Bool: True if transport protocol is UDP
         """
         return self.details.trans_protocol == TRANSPORT_PROTOCOLS_INFO['udp']['value']
 
     def is_tcp(self):
         """ Checks if transport protocol is TCP
-   
+
         Returns:
-        None: Boolean if transport protocol is TCP
+            Bool: True if transport protocol is TCP
         """
         return self.details.trans_protocol == TRANSPORT_PROTOCOLS_INFO['tcp']['value']
 
     def __str__(self) -> str:
+        """Built-in str method"""
         return f"Target:({self.target})\nSource:({self.source})\nDetails:({self.details})"
 
     def repr(self) -> str:
-        return f"Object: {self.__class__.__name__} ({repr(self.target)}, {repr(self.source)}, {repr(self.details)}, {(self.packet)})"
+        """Built-in repr method"""
+        return f"Object: {self.__class__.__name__} ({repr(self.target)}, " \
+            f"{repr(self.source)}, {repr(self.details)}, {(self.packet)})"
