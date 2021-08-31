@@ -189,7 +189,7 @@ def valid_host(host: Host) -> Host:
     if not isinstance(host, Host):
         raise ex.InvalidHostError(
             f'Must be Host class objects. Received: {host} type({type(host)}')
-    if host.ip_addr is None:
+    if host.ip is None:
         raise ex.HostNoIpAddressError(
             'Host IP instance attribute cannot be None.')
     if host.mac is None:
@@ -218,7 +218,7 @@ def valid_packet_details(details: PacketDetails, must_contain: list=None) -> Pac
 
     if not isinstance(details, PacketDetails):
         raise ex.InvalidPacketDetailsError(
-            f'Not a valid instace of PacketDetails. Received: {details} type({type(details)})')
+            f'Not a valid instance of PacketDetails. Received: {details} type({type(details)})')
 
     for key in must_contain:
         if not hasattr(details, key):
@@ -268,9 +268,7 @@ def valid_packet_info(info: dict) -> dict:
     Returns:
     dict: Valid packet info dictionary object
     """
-    must_contain = ['int_protocol', 'trans_protocol', 'cast', 'vlan', \
-                    'headers', 'min_length', 'max_length']
-
+    must_contain = ['int_protocol', 'trans_protocol', 'cast', 'vlan', 'headers']
     if not isinstance(info, dict):
         raise ex.PacketInfoTypeError(
             f'Not a valid packet info data type. Received: {info} ({type(info)}) '
@@ -278,13 +276,9 @@ def valid_packet_info(info: dict) -> dict:
 
     info_keys_set = set(info.keys())
     must_contain_set = set(must_contain)
-    if must_contain_set != info_keys_set:
-        if must_contain_set - info_keys_set:
-            raise ex.PacketInfoMissingEntriesError(
-                f'Packet info has missing values: {must_contain_set - info_keys_set}')
-        if info_keys_set - must_contain_set:
-            raise ex.PacketInfoExtraEntriesError(
-                f'Packet info has incorrect values: {info_keys_set - must_contain_set}')
+    if must_contain_set - info_keys_set:
+        raise ex.PacketInfoMissingEntriesError(
+            f'Packet info has missing values: {must_contain_set - info_keys_set}')
     return info
 
 
