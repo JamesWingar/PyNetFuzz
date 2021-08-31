@@ -76,15 +76,13 @@ class Randomiser():
 
         return random_host
 
-    def packet_details(self, details: PacketDetails, random_details: PacketDetails,
-            min_length: int=0, max_length: int=None) -> PacketDetails:
+    def packet_details(self, details: PacketDetails,
+            random_details: PacketDetails) -> PacketDetails:
         """ Generate randomised packet details from a given PacketDetails object
 
         Parameters:
             details (PacketDetails): PacketDetails object containing given packet details
             random_details (PacketDetails): PacketDetails object to be randomised
-            min_length (int): Minimum length of IP address
-            max_length (int): Maximum length of IP address
 
         Returns:
             random_details (PacketDetails): Randomised PacketDetails object
@@ -103,12 +101,11 @@ class Randomiser():
         random_details.headers = details.get(
             'headers', False)
 
-        if not min_length:
-            min_length = 0
-        if not max_length:
-            max_length = INTERNET_PROTOCOLS_INFO[int_str]['max_length'] - \
-                            INTERNET_PROTOCOLS_INFO[int_str]['header_length'] - \
-                            TRANSPORT_PROTOCOLS_INFO[trans_str]['header_length']
+        min_length = details.get('min_length', 0)
+        max_length = details.get('max_length', 
+            INTERNET_PROTOCOLS_INFO[int_str]['max_length'] - \
+            INTERNET_PROTOCOLS_INFO[int_str]['header_length'] - \
+            TRANSPORT_PROTOCOLS_INFO[trans_str]['header_length'])
         random_details.set('length', self.rand(min_length, max_length))
 
         if random_details.get('headers', None):

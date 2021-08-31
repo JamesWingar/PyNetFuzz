@@ -47,9 +47,6 @@ class PacketInfoTypeError(BaseValidationError):
 class PacketInfoMissingEntriesError(BaseValidationError):
     """Raised when packet info is missing entries"""
 
-class PacketInfoExtraEntriesError(BaseValidationError):
-    """Raised when packet info has additional entries"""
-
 #--- PACKET DETAILS EXCEPTIONS----
 class PacketDetailsTypeError(BaseValidationError):
     """Raised when packet details is the wrong type"""
