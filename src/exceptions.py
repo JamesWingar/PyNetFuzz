@@ -1,147 +1,189 @@
+"""
+Contains all module exception classes
+"""
 #--- BASE EXCEPTIONS----
 # Base Validation Class
 class BaseValidationError(ValueError):
-    pass
+    """Base validation error"""
 
 #--- CLASS EXCEPTIONS----
 class InvalidHostError(BaseValidationError):
-    pass
+    """Raised when host is invalid"""
+
 class InvalidPacketError(BaseValidationError):
-    pass
+    """Raised when packet is invalid"""
+
 class InvalidPacketDetailsError(BaseValidationError):
-    pass
+    """Raised when packet details are invalid"""
+
 class InvalidRandomiserError(BaseValidationError):
-    pass
+    """Raised when randomiser is invalid"""
 
 #--- HOST EXCEPTIONS----
 class HostNoIpAddressError(BaseValidationError):
-    pass
+    """Raised when IP address is missing"""
+
 class HostNoMacAddressError(BaseValidationError):
-    pass
+    """Raised when MAC address is missing"""
+
 class HostNoPortAddressError(BaseValidationError):
-    pass
+    """Raised when Port is missing"""
+
 class HostGetLocalIpError(BaseValidationError):
-    pass
+    """Raised when failed to get local IP"""
+
 class HostGetLocalMacError(BaseValidationError):
-    pass
+    """Raised when failed to get local MAC"""
+
 class HostGetRemoteMacError(BaseValidationError):
-    pass
+    """Raised when failed to get remote MAC"""
 
 #--- PACKET EXCEPTIONS----
 
 #--- PACKET INFO EXCEPTIONS----
 class PacketInfoTypeError(BaseValidationError):
-    pass
+    """Raised when packet info is the wrong type"""
+
 class PacketInfoMissingEntriesError(BaseValidationError):
-    pass
+    """Raised when packet info is missing entries"""
+
 class PacketInfoExtraEntriesError(BaseValidationError):
-    pass
+    """Raised when packet info has additional entries"""
 
 #--- PACKET DETAILS EXCEPTIONS----
 class PacketDetailsTypeError(BaseValidationError):
-    pass
+    """Raised when packet details is the wrong type"""
+
 class PacketDetailsAttributeError(BaseValidationError):
-    pass
+    """Raised when packet details has the wrong attribute"""
+
 class PacketDetailsMissingEntriesError(BaseValidationError):
-    pass
+    """Raised when packet details is missing entries"""
 
 #--- RANDOMISER EXCEPTIONS----
-
 
 #--- VALIDATION EXCEPTIONS----
 # IP address
 class IpAddressInvalidTypeError(BaseValidationError):
-    pass
+    """Raised when IP address is wrong type"""
+
 class IpAddressInvalidFormatError(BaseValidationError):
-    pass
+    """Raised when IP address is wrong format"""
+
 class IpScopeAddressInvalidFormatError(BaseValidationError):
-    pass
+    """Raised when Scope IP address is wrong format"""
+
 class IpAddressInvalidValueError(BaseValidationError):
-    pass
+    """Raised when IP address is wrong value"""
+
 class IpScopeAddressInvalidValueError(BaseValidationError):
-    pass
+    """Raised when Scope IP address is wrong value"""
+
 class IpAddressTooLongValueError(BaseValidationError):
-    pass
+    """Raised when IP address is too long"""
+
 class IpAddressTooShortValueError(BaseValidationError):
-    pass
+    """Raised when IP address is too short"""
 
 # Mac address
 class MacAddressInvalidTypeError(BaseValidationError):
-    pass
+    """Raised when MAC address is wrong type"""
+
 class MacAddressInvalidFormatError(BaseValidationError):
-    pass
+    """Raised when MAC address is wrong format"""
+
 class MacAddressInvalidValueError(BaseValidationError):
-    pass
+    """Raised when MAC address is wrong value"""
+
 class MacAddressTooLongValueError(BaseValidationError):
-    pass
+    """Raised when MAC address is too long"""
+
 class MacAddressTooShortValueError(BaseValidationError):
-    pass
+    """Raised when MAC address is too short"""
 
 # Port
 class PortInvalidTypeError(BaseValidationError):
-    pass
+    """Raised when Port is wrong type"""
+
 class PortInvalidFormatError(BaseValidationError):
-    pass
+    """Raised when Port is wrong format"""
+
 class PortInvalidValueError(BaseValidationError):
-    pass
+    """Raised when Port is wrong value"""
 
 # Name
 class NameInvalidTypeError(BaseValidationError):
-    pass
+    """Raised when name string is wrong type"""
+
 class NameInvalidFormatError(BaseValidationError):
-    pass
+    """Raised when name string is wrong format"""
+
 class NameInvalidValueError(BaseValidationError):
-    pass
+    """Raised when name string is wrong value"""
+
 class NameTooLongError(BaseValidationError):
-    pass
+    """Raised when name string is too long"""
+
 class NameTooShortError(BaseValidationError):
-    pass
+    """Raised when name string is too short"""
 
 # Internet protocol
 class InternetProtocolInvalidFormatError(BaseValidationError):
-    pass
+    """Raised when internet protocol is wrong format"""
+
 class InternetProtocolInvalidValueError(BaseValidationError):
-    pass
+    """Raised when internet protocol is wrong value"""
 
 # Transport protocol
 class TransportProtocolInvalidFormatError(BaseValidationError):
-    pass
+    """Raised when transport protocol is wrong format"""
+
 class TransportProtocolInvalidValueError(BaseValidationError):
-    pass
+    """Raised when transport protocol is wrong value"""
 
 # Cast type
 class CastTypeInvalidFormatError(BaseValidationError):
-    pass
+    """Raised when cast type is wrong format"""
+
 class CastTypeInvalidValueError(BaseValidationError):
-    pass
+    """Raised when cast type is wrong value"""
 
 # Seed
 class SeedInvalidTypeError(BaseValidationError):
-    pass
+    """Raised when seed is wrong type"""
+
 class SeedInvalidFormatError(BaseValidationError):
-    pass
+    """Raised when seed is wrong format"""
+
 class SeedInvalidValueError(BaseValidationError):
-    pass
+    """Raised when seed is wrong value"""
 
 #--- GENERIC TYPE EXCEPTIONS----
 # String
 class StringTooLongError(BaseValidationError):
-    pass
+    """Raised when a string is too long"""
+
 class StringTooShortError(BaseValidationError):
-    pass
+    """Raised when a string is too short"""
+
 class StringInvalidFormatError(BaseValidationError):
-    pass
+    """Raised when a string is wrong format"""
 
 # Integer
 class IntegerInvalidTypeError(BaseValidationError):
-    pass
+    """Raised when an integer is wrong type"""
+
 class IntegerInvalidFormatError(BaseValidationError):
-    pass
+    """Raised when an integer is wrong format"""
+
 class IntegerTooLargeError(BaseValidationError):
-    pass
+    """Raised when an integer is too large"""
+
 class IntegerTooSmallError(BaseValidationError):
-    pass
+    """Raised when an integer is too small"""
+
 class IntegerMustBePositiveError(BaseValidationError):
-    pass
+    """Raised when an integer should be but is not positive"""
+
 class IntegerMustBeNegativeError(BaseValidationError):
-    pass
+    """Raised when an integer should but is not negative"""
