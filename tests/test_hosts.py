@@ -11,7 +11,7 @@ from src.hosts import Host
 
 # Testing the Host Class
 class TestArgumentParser(unittest.TestCase):
-    """Testing Host class and methods"""
+    """ Testing Host class and methods"""
 
     @staticmethod
     def get_test_interface_info():
@@ -19,7 +19,7 @@ class TestArgumentParser(unittest.TestCase):
 
         Returns:
             tuple: Details of a local interface (name, ip, mac)
-        """
+        """ 
         host_name = socket.gethostname()
         ip_address = socket.gethostbyname(host_name)
         ifaces = psutil.net_if_addrs()
@@ -33,7 +33,7 @@ class TestArgumentParser(unittest.TestCase):
         return False
 
     def test_valid_parameters(self):
-        """Test valid parameters initialising"""
+        """ Test valid parameters initialising"""
         test_host = Host("0.168.1.1", "00:E7:EE:E7:61:5E", "8000")
         self.assertEqual(
             (test_host.ip_addr, test_host.mac, test_host.port, test_host.online),
@@ -60,7 +60,7 @@ class TestArgumentParser(unittest.TestCase):
             (None, None, None, False))
 
     def test_invalid_ip(self):
-        """Test invalid ip address parameter"""
+        """ Test invalid ip address parameter"""
         with self.assertRaises(ex.IpScopeAddressInvalidFormatError):
             Host('256.255.255.255', "00:E7:EE:E7:61:5E", "8000")
         with self.assertRaises(ex.IpScopeAddressInvalidFormatError):
@@ -77,7 +77,7 @@ class TestArgumentParser(unittest.TestCase):
             Host("", "00:E7:EE:E7:61:5E", "8000")
 
     def test_invalid_mac(self):
-        """Test invalid mac address parameter"""
+        """ Test invalid mac address parameter"""
         with self.assertRaises(ex.MacAddressInvalidFormatError):
             Host("192.99.1.10", 'FG:FF:FF:FF:FF:FF', "8000")
         with self.assertRaises(ex.MacAddressInvalidFormatError):
@@ -94,7 +94,7 @@ class TestArgumentParser(unittest.TestCase):
             Host("192.99.1.10", "", "8000")
 
     def test_invalid_port(self):
-        """Test invalid port parameter"""
+        """ Test invalid port parameter"""
         with self.assertRaises(ex.PortInvalidValueError):
             Host("192.99.1.10", "00:E7:EE:E7:61:5E", "65536")
         with self.assertRaises(ex.PortInvalidValueError):
@@ -109,7 +109,7 @@ class TestArgumentParser(unittest.TestCase):
             Host("192.99.1.10", "00:E7:EE:E7:61:5E", "")
 
     def test_invalid_interface(self):
-        """Test invalid interface name parameter"""
+        """ Test invalid interface name parameter"""
         with self.assertRaises(ex.NameInvalidTypeError):
             Host("192.99.1.10", "00:E7:EE:E7:61:5E", "8000", [])
         with self.assertRaises(ex.NameInvalidTypeError):
@@ -122,7 +122,7 @@ class TestArgumentParser(unittest.TestCase):
             Host("192.99.1.10", "00:E7:EE:E7:61:5E", "8000", "hello")
 
     def test_valid_get_local_host(self):
-        """Test valid get local host method"""
+        """ Test valid get local host method"""
         (iface_name, iface_addr, iface_mac) = self.get_test_interface_info()
 
         test_host = Host(iface_addr, "self", "8080", iface_name)
@@ -147,7 +147,7 @@ class TestArgumentParser(unittest.TestCase):
             (iface_addr, iface_mac, None, False))
 
     def test_invalid_get_local_host(self):
-        """Test invalid get local host method"""
+        """ Test invalid get local host method"""
         (_, iface_addr, _) = self.get_test_interface_info()
 
         with self.assertRaises(ex.HostGetLocalIpError):

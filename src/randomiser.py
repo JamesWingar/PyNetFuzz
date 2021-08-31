@@ -18,7 +18,7 @@ from src.validation import (
 
 
 class Randomiser():
-    """Random values generator class"""
+    """ Random values generator class"""
 
     def __init__(self, seed: int=None) -> None:
         """ Randomiser class built-in initialiser

@@ -9,10 +9,10 @@ from src.randomiser import Randomiser
 
 # Testing the Randomiser Class
 class TestRandomiser(unittest.TestCase):
-    """Testing Randomiser class and methods"""
+    """ Testing Randomiser class and methods"""
 
     def test_valid_init(self):
-        """Test valid initialising parameters"""
+        """ Test valid initialising parameters"""
         # Correct random seed initialisation test
         self.assertEqual(Randomiser(1).seed, 1)
         self.assertEqual(type(Randomiser().seed), int)
@@ -20,7 +20,7 @@ class TestRandomiser(unittest.TestCase):
         self.assertEqual(Randomiser(1934580).seed, 1934580)
 
     def test_invalid_init(self):
-        """Test invalid initialising parameters"""
+        """ Test invalid initialising parameters"""
         # Incorrect argument datatype tests
         with self.assertRaises(ex.SeedInvalidValueError):
             Randomiser(-192200949580)
@@ -28,7 +28,7 @@ class TestRandomiser(unittest.TestCase):
             Randomiser("hello")
 
     def test_valid_ip(self):
-        """Test valid ip randomise method"""
+        """ Test valid ip randomise method"""
         # Random int (0-255) Sequence: 68 32 130 60 253 230 241 194
         seed = 1
         # Correct random IP generation
@@ -41,7 +41,7 @@ class TestRandomiser(unittest.TestCase):
         self.assertEqual(Randomiser(seed).ip(), Randomiser(seed).ip("*.*.*.*"))
 
     def test_invalid_ip(self):
-        """Test invalid ip randomise method"""
+        """ Test invalid ip randomise method"""
         # Random int (0-255) Sequence: 68 32 130 60 253 230 241 194
         seed = 1
         # Incorrect argument datatype tests
@@ -64,7 +64,7 @@ class TestRandomiser(unittest.TestCase):
             Randomiser(seed).ip("39wrnvkdsnv.4903wr.fosief.309")
 
     def test_mac(self):
-        """Test mac address randomise method"""
+        """ Test mac address randomise method"""
         seeds = {
             # Seed: 11 - Random int (0-255) Sequence (dec): 231 238 231 97 94
             # Seed: 11 - Random int (0-255) Sequence (hex): E7 EE E7 61 5E
@@ -86,7 +86,7 @@ class TestRandomiser(unittest.TestCase):
             self.assertEqual(Randomiser(seed).mac(), result)
 
     def test_boolean(self):
-        """Test bool value randomise method"""
+        """ Test bool value randomise method"""
         # Seed: 61 - Random int (0-1) Sequence: 1 0 0 1 1
         seed, results = 61, [True, False, False, True, True]
         randomiser = Randomiser(seed)
@@ -94,7 +94,7 @@ class TestRandomiser(unittest.TestCase):
             self.assertEqual(randomiser.boolean(), result)
 
     def test_valid_index(self):
-        """Test valid index randomise method"""
+        """ Test valid index randomise method"""
         seed = 71 # Random int (0, length - 1)
         randomiser = Randomiser(seed)
         # Correct random index generation
@@ -105,7 +105,7 @@ class TestRandomiser(unittest.TestCase):
         self.assertEqual(randomiser.index(65535), 53880)
 
     def test_invalid_index(self):
-        """Test invalid index randomise method"""
+        """ Test invalid index randomise method"""
         seed = 71 # Random int (0, length - 1)
         # Incorrect argument datatype tests
         with self.assertRaises(ex.IntegerInvalidFormatError):
@@ -115,7 +115,7 @@ class TestRandomiser(unittest.TestCase):
             Randomiser(seed).index(-10)
 
     def test_valid_choose(self):
-        """Test valid choose randomise method"""
+        """ Test valid choose randomise method"""
         # Seed: 81 - Random int (0, length - 1) Sequence: 8 7 5 8 8
         seed_1 = 81
         # Seed: 91 - Random int (0, length - 1) Sequence: 1 9 2 10 10
@@ -140,7 +140,7 @@ class TestRandomiser(unittest.TestCase):
         self.assertEqual(randomiser.choose(test_list), True)
 
     def test_invalid_choose(self):
-        """Test invalid choose randomise method"""
+        """ Test invalid choose randomise method"""
         seed = 81 # Random int (0, length - 1)
         # Incorrect argument datatype tests
         with self.assertRaises(TypeError):
@@ -154,7 +154,7 @@ class TestRandomiser(unittest.TestCase):
             Randomiser(seed).choose([])
 
     def test_valid_rand(self):
-        """Test valid choose randomise method"""
+        """ Test valid choose randomise method"""
         seed = 101  # Random int (min, max)
 
         # Correct random value generation
@@ -166,7 +166,7 @@ class TestRandomiser(unittest.TestCase):
         self.assertEqual(randomiser.rand(-65535, -50051), -50397)
 
     def test_invalid_rand(self):
-        """Test invalid choose randomise method"""
+        """ Test invalid choose randomise method"""
         seed = 101  # Random int (min, max)
         # Incorrect argument datatype tests
         with self.assertRaises(TypeError):
@@ -186,7 +186,7 @@ class TestRandomiser(unittest.TestCase):
             Randomiser(seed).rand(70, 68)
 
     def test_bit(self):
-        """Test bit randomise method"""
+        """ Test bit randomise method"""
         seed = 111 # Random int (0, bit)
         # Correct random choice generation
         randomiser = Randomiser(seed)

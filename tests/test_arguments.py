@@ -9,10 +9,10 @@ from src.arguments import parse_args
 
 # Testing the Argument parser
 class TestArgumentParser(unittest.TestCase):
-    """Testing argument parsing methods and checking"""
+    """ Testing argument parsing methods and checking"""
 
     def test_valid_ip_arg(self):
-        """Test valid ip argument parsing"""
+        """ Test valid ip argument parsing"""
         result = parse_args(['192.168.1.254', 'eth0', '1000', '-sip', '192.168.1.10'])
         self.assertEqual((result.target_ip, result.source_ip), ('192.168.1.254', '192.168.1.10'))
         result = parse_args(['255.255.255.255', 'eth0', '1000', '-sip', '255.255.255.255'])
@@ -28,7 +28,7 @@ class TestArgumentParser(unittest.TestCase):
         self.assertEqual((result.target_ip, result.source_ip), ('0.0.0.0', '0.0.0.*'))
 
     def test_invalid_ip_arg(self):
-        """Test invalid ip argument parsing"""
+        """ Test invalid ip argument parsing"""
         with self.assertRaises(SystemExit):
             parse_args(['256.255.255.255', 'eth0', '1000', '-sip', '255.255.255.255'])
         with self.assertRaises(SystemExit):
@@ -55,7 +55,7 @@ class TestArgumentParser(unittest.TestCase):
             parse_args(['192.168.1.254', 'eth0', '1000', '-sip', ''])
 
     def test_valid_interface_name_arg(self):
-        """Test valid interface name argument parsing"""
+        """ Test valid interface name argument parsing"""
         result = parse_args(['192.168.1.254', 'eth0', '1000'])
         self.assertEqual(result.network_interface, 'eth0')
         result = parse_args(['192.168.1.254', 'enx39405730947563058235830583', '1000'])
@@ -64,28 +64,28 @@ class TestArgumentParser(unittest.TestCase):
         self.assertEqual(result.network_interface, 'enx/[]#./.~<>#;!][;[/.')
 
     def test_invalid_interface_name_arg(self):
-        """Test invalid interface name argument parsing"""
+        """ Test invalid interface name argument parsing"""
         with self.assertRaises(SystemExit):
             parse_args(['192.168.1.254', '', '1000'])
         with self.assertRaises(SystemExit):
             parse_args(['192.168.1.254', 'enx394057309475630582358305831231', '1000'])
 
     def test_valid_n_packets_arg(self):
-        """Test valid number of packets argument parsing"""
+        """ Test valid number of packets argument parsing"""
         result = parse_args(['192.168.1.254', 'eth0', '10000'])
         self.assertEqual(result.n_packets, 10000)
         result = parse_args(['192.168.1.254', 'eth0', '1000000'])
         self.assertEqual(result.n_packets, 1000000)
 
     def test_invalid_n_packets_arg(self):
-        """Test invalid number of packets argument parsing"""
+        """ Test invalid number of packets argument parsing"""
         with self.assertRaises(SystemExit):
             parse_args(['192.168.1.254', 'eth0', '0'])
         with self.assertRaises(SystemExit):
             parse_args(['192.168.1.254', 'eth0', '-10'])
 
     def test_valid_mac_arg(self):
-        """Test valid MAC address argument parsing"""
+        """ Test valid MAC address argument parsing"""
         result = parse_args(['192.168.10.100', 'eth0', '1000', '-tm',
             'FF:FF:FF:FF:FF:FF', '-sm', 'FF:FF:FF:FF:FF:FF'])
         self.assertEqual(
@@ -116,7 +116,7 @@ class TestArgumentParser(unittest.TestCase):
             (result.target_mac, result.source_mac), ('54FE.9FF9.AA00', '54FE.9FF9.AA00'))
 
     def test_invalid_mac_arg(self):
-        """Test invalid MAC address argument parsing"""
+        """ Test invalid MAC address argument parsing"""
         with self.assertRaises(SystemExit):
             parse_args(['192.168.10.100', 'eth0', '1000', '-tm',
                 'FG:FF:FF:FF:FF:FF', '-sm', 'FF:FG:FF:FF:FF:FF'])
@@ -134,14 +134,14 @@ class TestArgumentParser(unittest.TestCase):
                 '01:9F:5E:00:66:01', '-sm', '09:9B:E7:C2.66:A1'])
 
     def test_vlan_arg(self):
-        """Test vlan argument parsing"""
+        """ Test vlan argument parsing"""
         result = parse_args(['192.168.10.100', 'eth0', '1000', '-vl'])
         self.assertEqual(result.vlan, True)
         result = parse_args(['192.168.10.100', 'eth0', '1000'])
         self.assertEqual(result.vlan, False)
 
     def test_valid_internet_protocol_arg(self):
-        """Test valid internet protocol argument parsing"""
+        """ Test valid internet protocol argument parsing"""
         result = parse_args(['192.168.10.100', 'eth0', '1000', '-ip', 'ipv4'])
         self.assertEqual(result.int_protocol, const.INTERNET_PROTOCOLS_INFO['ipv4']['value'])
         result = parse_args(['192.168.10.100', 'eth0', '1000', '-ip', 'IPV4'])
@@ -164,12 +164,12 @@ class TestArgumentParser(unittest.TestCase):
         # self.assertEqual(result.int_protocol, const.INTERNET_PROTOCOLS_INFO['jumbo']['value'])
 
     def test_invalid_internet_protocol_arg(self):
-        """Test invalid internet protocol argument parsing"""
+        """ Test invalid internet protocol argument parsing"""
         with self.assertRaises(SystemExit):
             parse_args(['192.168.10.100', 'eth0', '1000', '-ip', 'test'])
 
     def test_valid_transport_protocol_arg(self):
-        """Test valid transport protocol argument parsing"""
+        """ Test valid transport protocol argument parsing"""
         result = parse_args(['192.168.10.100', 'eth0', '1000', '-tp', 'udp'])
         self.assertEqual(result.trans_protocol, const.TRANSPORT_PROTOCOLS_INFO['udp']['value'])
         result = parse_args(['192.168.10.100', 'eth0', '1000', '-tp', 'UDP'])
@@ -184,12 +184,12 @@ class TestArgumentParser(unittest.TestCase):
         self.assertEqual(result.trans_protocol, const.TRANSPORT_PROTOCOLS_INFO['tcp']['value'])
 
     def test_invalid_transport_protocol_arg(self):
-        """Test invalid transport protocol argument parsing"""
+        """ Test invalid transport protocol argument parsing"""
         with self.assertRaises(SystemExit):
             parse_args(['192.168.10.100', 'eth0', '1000', '-tp', 'test'])
 
     def test_valid_port_arg(self):
-        """Test valid port number argument parsing"""
+        """ Test valid port number argument parsing"""
         result = parse_args(['192.168.1.254', 'eth0', '1000', '-t_p', '2000', '-s_p', '4000'])
         self.assertEqual((result.target_port, result.source_port), (2000, 4000))
         result = parse_args(['192.168.1.254', 'eth0', '1000', '-t_p', '1', '-s_p', '65535'])
@@ -198,7 +198,7 @@ class TestArgumentParser(unittest.TestCase):
         self.assertEqual((result.target_port, result.source_port), (65535, 1))
 
     def test_invalid_port_arg(self):
-        """Test invalid port number argument parsing"""
+        """ Test invalid port number argument parsing"""
         with self.assertRaises(SystemExit):
             parse_args(['192.168.1.254', 'eth0', '1000', '-t_p', '65536', '-s_p', '0'])
         with self.assertRaises(SystemExit):
@@ -209,7 +209,7 @@ class TestArgumentParser(unittest.TestCase):
             parse_args(['192.168.1.254', 'eth0', '1000', '-t_p', '80', '-s_p', 'hello'])
 
     def test_valid_cast_arg(self):
-        """Test valid cast type argument parsing"""
+        """ Test valid cast type argument parsing"""
         result = parse_args(['192.168.10.100', 'eth0', '1000', '-c', 'unicast'])
         self.assertEqual(result.cast, 'unicast')
         result = parse_args(['192.168.10.100', 'eth0', '1000', '-c', 'UNICAST'])
@@ -230,7 +230,7 @@ class TestArgumentParser(unittest.TestCase):
         self.assertEqual(result.cast, 'broadcast')
 
     def test_invalid_cast_arg(self):
-        """Test invalid cast type argument parsing"""
+        """ Test invalid cast type argument parsing"""
         with self.assertRaises(SystemExit):
             parse_args(['192.168.1.254', 'eth0', '1000', '-c', '1000'])
         with self.assertRaises(SystemExit):
@@ -239,35 +239,35 @@ class TestArgumentParser(unittest.TestCase):
             parse_args(['192.168.1.254', 'eth0', '1000', '-c', 'dandelion'])
 
     def test_headers_arg(self):
-        """Test headers argument parsing"""
+        """ Test headers argument parsing"""
         result = parse_args(['192.168.1.254', 'eth0', '1000', '-hd'])
         self.assertEqual(result.headers, False)
         result = parse_args(['192.168.1.254', 'eth0', '1000'])
         self.assertEqual(result.headers, True)
 
     def test_valid_packet_length_arg(self):
-        """Test valid packet length argument parsing"""
+        """ Test valid packet length argument parsing"""
         result = parse_args(['192.168.1.254', 'eth0', '1000', '-min', '100', '-max', '7000'])
         self.assertEqual((result.min_length, result.max_length), (100, 7000))
         result = parse_args(['192.168.1.254', 'eth0', '1000', '-min', '48', '-max', '9000'])
         self.assertEqual((result.min_length, result.max_length), (48, 9000))
 
     def test_invalid_packet_length_arg(self):
-        """Test invalid packet length argument parsing"""
+        """ Test invalid packet length argument parsing"""
         with self.assertRaises(SystemExit):
             parse_args(['192.168.1.254', 'eth0', '1000', '-min', '47', '-max', '9001'])
         with self.assertRaises(SystemExit):
             parse_args(['192.168.1.254', 'eth0', '1000', '-min', '-48', '-max', '8080'])
 
     def test_valid_seed_arg(self):
-        """Test valid seed argument parsing"""
+        """ Test valid seed argument parsing"""
         result = parse_args(['192.168.1.254', 'eth0', '1000', '-s', '10000'])
         self.assertEqual(result.seed, 10000)
         result = parse_args(['192.168.1.254', 'eth0', '1000', '-s', '1000000'])
         self.assertEqual(result.seed, 1000000)
 
     def test_invalid_seed_arg(self):
-        """Test invalid seed argument parsing"""
+        """ Test invalid seed argument parsing"""
         with self.assertRaises(SystemExit):
             parse_args(['192.168.1.254', 'eth0', '1000', '-s', '0'])
         with self.assertRaises(SystemExit):
