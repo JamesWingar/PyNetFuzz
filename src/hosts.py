@@ -15,7 +15,7 @@ from src.validation import (
 
 
 class Host():
-    """Class object interface to local and remote hosts"""
+    """ Class object interface to local and remote hosts"""
 
     def __init__(self, ip_addr: str, mac: str, port: str, interface: str=None) -> None:
         """ Host class built-in initialiser
