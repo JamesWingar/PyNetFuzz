@@ -17,11 +17,11 @@ from src.validation import (
 class Host():
     """ Class object interface to local and remote hosts"""
 
-    def __init__(self, ip_addr: str, mac: str, port: str, interface: str=None) -> None:
+    def __init__(self, ip: str, mac: str, port: str, interface: str=None) -> None:
         """ Host class built-in initialiser
 
         Parameters:
-            ip_addr (str): IP address string
+            ip (str): IP address string
             mac (str): MAC address string
             port (str): Port value string
             interface (str): Optional argument for local interface name. If intereface
@@ -32,12 +32,12 @@ class Host():
         self.online = False
 
         if self.interface: # If interface given assumed local host
-            self.ip_addr = self.get_local_ip(self.interface)
+            self.ip = self.get_local_ip(self.interface)
             self.mac = self.get_local_mac(self.interface)
         else: # else assumed remote host
-            self.ip_addr = valid_scope_ip(ip_addr)
+            self.ip = valid_scope_ip(ip)
             if mac == "self":
-                self.mac = self.get_remote_mac(self.ip_addr)
+                self.mac = self.get_remote_mac(self.ip)
             else:
                 self.mac = valid_mac(mac)
 
@@ -56,7 +56,7 @@ class Host():
         Returns:
             bool: Returns true if IP is present
         """
-        return self.ip_addr is not None
+        return self.ip is not None
 
     def is_mac(self) -> bool:
         """ Checks if MAC is present
@@ -84,7 +84,7 @@ class Host():
             raise ex.HostNoIpAddressError(
                 'Host has no IP address. You can not use ping_host without an IP address.')
 
-        return sr1(IP(dst=self.ip_addr) / ICMP(), timeout=1, verbose=False) is not None
+        return sr1(IP(dst=self.ip) / ICMP(), timeout=1, verbose=False) is not None
 
     @staticmethod
     def get_local_ip(iface: str) -> str:
@@ -119,13 +119,13 @@ class Host():
         return valid_mac(local_ifaces[iface][-1].address)
 
     @staticmethod
-    def get_remote_mac(ip_addr: str) -> str:
+    def get_remote_mac(ip: str) -> str:
         """ Gets MAC address of a remote interface. Uses IP address of the class.
 
         Returns:
             str: Uppercase string of the remote interface MAC address
         """
-        mac_addr = getmacbyip(ip_addr).upper()
+        mac_addr = getmacbyip(ip).upper()
         if mac_addr is None:
             raise ex.HostGetRemoteMacError(
                 'Can not get remote Mac address. Might be due to an incorrect IP address.')
@@ -133,10 +133,10 @@ class Host():
 
     def __str__(self) -> str:
         """Built-in str method"""
-        return f"IP: {self.ip_addr}, MAC: {self.mac}, Port: {self.port}, " \
+        return f"IP: {self.ip}, MAC: {self.mac}, Port: {self.port}, " \
             f"Interface: {self.interface}, Online: {self.online}"
 
     def __repr__(self) -> str:
         """Built-in repr method"""
-        return f"Object: {self.__class__.__name__} ({self.ip_addr}, {self.mac}, " \
+        return f"Object: {self.__class__.__name__} ({self.ip}, {self.mac}, " \
             f"{self.port}, {self.interface}, {self.online})"

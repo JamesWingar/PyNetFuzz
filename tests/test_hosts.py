@@ -10,7 +10,7 @@ import src.exceptions as ex
 from src.hosts import Host
 
 # Testing the Host Class
-class TestArgumentParser(unittest.TestCase):
+class TestHostClass(unittest.TestCase):
     """ Testing Host class and methods"""
 
     @staticmethod
@@ -36,27 +36,27 @@ class TestArgumentParser(unittest.TestCase):
         """ Test valid parameters initialising"""
         test_host = Host("0.168.1.1", "00:E7:EE:E7:61:5E", "8000")
         self.assertEqual(
-            (test_host.ip_addr, test_host.mac, test_host.port, test_host.online),
+            (test_host.ip, test_host.mac, test_host.port, test_host.online),
             ("0.168.1.1", "00:E7:EE:E7:61:5E", 8000, False))
         test_host = Host("255.45.1.*", "FF:FF:FF:FF:FF:FF", "1")
         self.assertEqual(
-            (test_host.ip_addr, test_host.mac, test_host.port, test_host.online),
+            (test_host.ip, test_host.mac, test_host.port, test_host.online),
             ("255.45.1.*", "FF:FF:FF:FF:FF:FF", 1, False))
         test_host = Host("192.99.*.*", "00:00:00:00:00:00", 65535.0)
         self.assertEqual(
-            (test_host.ip_addr, test_host.mac, test_host.port, test_host.online),
+            (test_host.ip, test_host.mac, test_host.port, test_host.online),
             ("192.99.*.*", "00:00:00:00:00:00", 65535, False))
         test_host = Host("1.*.*.*", "AF:AF:AF:AF:AF:AF", 43231)
         self.assertEqual(
-            (test_host.ip_addr, test_host.mac, test_host.port, test_host.online),
+            (test_host.ip, test_host.mac, test_host.port, test_host.online),
             ("1.*.*.*", "AF:AF:AF:AF:AF:AF", 43231, False))
         test_host = Host("*.*.*.*", "99:00:A9:4F:3D:7E", "12645")
         self.assertEqual(
-            (test_host.ip_addr, test_host.mac, test_host.port, test_host.online),
+            (test_host.ip, test_host.mac, test_host.port, test_host.online),
             ("*.*.*.*", "99:00:A9:4F:3D:7E", 12645, False))
         test_host = Host(None, None, None)
         self.assertEqual(
-            (test_host.ip_addr, test_host.mac, test_host.port, test_host.online),
+            (test_host.ip, test_host.mac, test_host.port, test_host.online),
             (None, None, None, False))
 
     def test_invalid_ip(self):
@@ -127,23 +127,23 @@ class TestArgumentParser(unittest.TestCase):
 
         test_host = Host(iface_addr, "self", "8080", iface_name)
         self.assertEqual(
-            (test_host.ip_addr, test_host.mac, test_host.port, test_host.online),
+            (test_host.ip, test_host.mac, test_host.port, test_host.online),
             (iface_addr, iface_mac, 8080, False))
         test_host = Host(iface_addr, iface_mac, 8080, iface_name)
         self.assertEqual(
-            (test_host.ip_addr, test_host.mac, test_host.port, test_host.online),
+            (test_host.ip, test_host.mac, test_host.port, test_host.online),
             (iface_addr, iface_mac, 8080, False))
         test_host = Host(iface_addr, "00:00:00:00:00:00", "8080", iface_name)
         self.assertEqual(
-            (test_host.ip_addr, test_host.mac, test_host.port, test_host.online),
+            (test_host.ip, test_host.mac, test_host.port, test_host.online),
             (iface_addr, iface_mac, 8080, False))
         test_host = Host("192.168.1.1", None, None, iface_name)
         self.assertEqual(
-            (test_host.ip_addr, test_host.mac, test_host.port, test_host.online),
+            (test_host.ip, test_host.mac, test_host.port, test_host.online),
             (iface_addr, iface_mac, None, False))
         test_host = Host(None, None, None, iface_name)
         self.assertEqual(
-            (test_host.ip_addr, test_host.mac, test_host.port, test_host.online),
+            (test_host.ip, test_host.mac, test_host.port, test_host.online),
             (iface_addr, iface_mac, None, False))
 
     def test_invalid_get_local_host(self):
