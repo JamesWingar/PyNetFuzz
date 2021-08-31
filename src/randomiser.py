@@ -68,7 +68,7 @@ class Randomiser():
         Returns:
             random_host: Randomised Host object
         """
-        random_host.ip = self.ip(host.ip) if host.is_ip() else self.ip()
+        random_host.ip_addr = self.ip(host.ip_addr) if host.is_ip() else self.ip()
         if not host.is_mac():
             random_host.mac = self.mac()
         if not host.is_port():

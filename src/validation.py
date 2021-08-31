@@ -189,7 +189,7 @@ def valid_host(host: Host) -> Host:
     if not isinstance(host, Host):
         raise ex.InvalidHostError(
             f'Must be Host class objects. Received: {host} type({type(host)}')
-    if host.ip is None:
+    if host.ip_addr is None:
         raise ex.HostNoIpAddressError(
             'Host IP instance attribute cannot be None.')
     if host.mac is None:
