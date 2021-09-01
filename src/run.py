@@ -47,7 +47,6 @@ def run(args: Args) -> None:
 
         logging.info("Starting packet generator (Pkt=%s, Gen=%s)", packet_count, gen_count)
         for packet in packet_generator(target, packet_details, source, args.seed):
-            logging.debug("%s: %s", packet_count, packet)
             packet.send(args.network_interface)
             packet_count += 1
 
