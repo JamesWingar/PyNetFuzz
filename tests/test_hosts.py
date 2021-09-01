@@ -4,10 +4,10 @@ Unit tests for Host class
 import unittest
 import socket
 import psutil
-import src.exceptions as ex
-
+# Package imports
+import pynetfuzz.exceptions as ex
 # Module under test
-from src.hosts import Host
+from pynetfuzz.hosts import Host
 
 # Testing the Host Class
 class TestHostClass(unittest.TestCase):

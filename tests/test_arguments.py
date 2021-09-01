@@ -2,10 +2,10 @@
 Unit tests for argument parsing
 """
 import unittest
-from src import const
-
+# Package imports
+from pynetfuzz import const
 # Module under test
-from src.arguments import parse_args
+from pynetfuzz.arguments import parse_args
 
 # Testing the Argument parser
 class TestArgumentParser(unittest.TestCase):

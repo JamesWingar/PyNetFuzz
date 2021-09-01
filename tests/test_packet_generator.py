@@ -2,9 +2,8 @@
 Unit tests for Packet Generator function
 """
 import unittest
-
 # Module under test
-from src.packet_generator import packet_generator
+from pynetfuzz.packet_generator import packet_generator
 
 # Testing the Packet Generator function
 class TestPacketGeneratorParser(unittest.TestCase):

@@ -2,10 +2,10 @@
 Unit tests for Randomiser class
 """
 import unittest
-import src.exceptions as ex
-
+# Package imports
+import pynetfuzz.exceptions as ex
 # Module under test
-from src.randomiser import Randomiser
+from pynetfuzz.randomiser import Randomiser
 
 # Testing the Randomiser Class
 class TestRandomiser(unittest.TestCase):

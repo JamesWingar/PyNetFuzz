@@ -5,13 +5,13 @@ import unittest
 from scapy.layers.l2 import Ether
 from scapy.layers.inet import IP, UDP, TCP
 from scapy.packet import Raw
-from src import const
-import src.exceptions as ex
-
+# Package imports
+from pynetfuzz import const
+import pynetfuzz.exceptions as ex
 # Modules under test
-from src.packet import Packet
-from src.packet import PacketDetails
-from src.hosts import Host
+from pynetfuzz.packet import Packet
+from pynetfuzz.packet import PacketDetails
+from pynetfuzz.hosts import Host
 
 # Testing the recursive sorting algorithms
 class TestArgumentParser(unittest.TestCase):
