@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-
+"""
+CLI run script
+"""
 # Python library imports
 from src.arguments import parse_args
 # Package imports

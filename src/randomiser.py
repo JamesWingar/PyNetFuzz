@@ -105,7 +105,7 @@ class Randomiser():
         if min_length is None:
             min_length = 0
         max_length = details.get('max_length')
-        if max_length is None: 
+        if max_length is None:
             max_length = INTERNET_PROTOCOLS_INFO[int_str]['max_length'] - \
                 INTERNET_PROTOCOLS_INFO[int_str]['header_length'] - \
                 TRANSPORT_PROTOCOLS_INFO[trans_str]['header_length']

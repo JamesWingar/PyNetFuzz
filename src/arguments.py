@@ -265,8 +265,8 @@ def check_arg_packet_length_int(string):
 class Args():
     """ Argument Class to store run arguments"""
 
-    def __init__(self, **kwargs):
-        """ Host class built-in initialiser"""
+    def __init__(self, args: dict):
+        """ Args class built-in initialiser"""
         self.target_ip = None
         self.network_interface = None
         self.n_packets = None
@@ -280,11 +280,11 @@ class Args():
         self.cast = None
         self.headers = None
         self.vlan = None
-        self.min_length = None 
+        self.min_length = None
         self.max_length = None
         self.seed = None
 
-        for key, value in kwargs:
+        for key, value in args.items():
             if key in self.__dict__:
                 setattr(self, key, value)
 
