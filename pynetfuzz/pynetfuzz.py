@@ -3,9 +3,9 @@
 CLI run script
 """
 # Python library imports
-from src.arguments import parse_args
+from arguments import parse_args
 # Package imports
-from src.run import run
+from run import run
 
 
 def main():

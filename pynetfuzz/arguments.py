@@ -5,7 +5,7 @@ Methods for parsing command line arguments with argument check methods
 import argparse
 import re
 # Package imports
-from src import const
+import const
 
 
 def parse_args(args=None):

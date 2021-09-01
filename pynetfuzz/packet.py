@@ -10,11 +10,9 @@ from scapy.layers.l2 import Ether, Dot1Q
 from scapy.layers.inet import IP, UDP, TCP
 from scapy.utils import randstring
 # Package imports
-from src.hosts import Host
-from src.const import (
-    TRANSPORT_PROTOCOLS_INFO,
-)
-from src.validation import (
+from hosts import Host
+from const import TRANSPORT_PROTOCOLS_INFO
+from validation import (
     valid_host, valid_packet_info, valid_complete_packet_details
 )
 

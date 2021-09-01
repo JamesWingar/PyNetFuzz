@@ -6,13 +6,13 @@ from typing import Union
 from time import time
 import random
 # Package imports
-from src.hosts import Host
-from src.packet import PacketDetails
-from src.const import (
+from hosts import Host
+from packet import PacketDetails
+from const import (
     TRANSPORT_PROTOCOLS_INFO, CAST_TYPES, INTERNET_PROTOCOLS,
     TRANSPORT_PROTOCOLS, INTERNET_PROTOCOLS_INFO,
 )
-from src.validation import (
+from validation import (
     valid_scope_ip, valid_seed, valid_number,
 )
 

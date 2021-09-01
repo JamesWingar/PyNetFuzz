@@ -4,15 +4,12 @@ Contains Generator function - packet generator
 #Python library imports
 import logging
 # Package imports
-from src.randomiser import Randomiser
-from src.packet import Packet, PacketDetails
-from src.hosts import Host
-from src.const import (
-    PACKETS_PER_SEED,
-)
-from src.validation import (
-    valid_packet_details,
-)
+from randomiser import Randomiser
+from packet import Packet, PacketDetails
+from hosts import Host
+from const import PACKETS_PER_SEED
+from validation import valid_packet_details
+
 
 def packet_generator(target: Host, details: PacketDetails,
         source: Host=None, seed: int=None, max_packets: int=PACKETS_PER_SEED) -> Packet:

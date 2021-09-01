@@ -7,10 +7,9 @@ from scapy.layers.l2 import getmacbyip
 from scapy.layers.inet import IP, ICMP
 import psutil
 # Package imports
-import src.exceptions as ex
-from src.validation import (
-    valid_specific_ip, valid_scope_ip, valid_mac,
-    valid_port, valid_name,
+import exceptions as ex
+from validation import (
+    valid_specific_ip, valid_scope_ip, valid_mac, valid_port, valid_name,
 )
 
 
