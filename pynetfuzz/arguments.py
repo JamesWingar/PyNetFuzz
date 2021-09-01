@@ -5,7 +5,12 @@ Methods for parsing command line arguments with argument check methods
 import argparse
 import re
 # Package imports
-import const
+from .const import (
+    REGEX_SPECIFIC_IP, REGEX_SCOPE_IP, REGEX_MAC,
+    INTERNET_PROTOCOLS, INTERNET_PROTOCOLS_INFO,
+    TRANSPORT_PROTOCOLS, TRANSPORT_PROTOCOLS_INFO,
+    MAX_PORT, CAST_TYPES, 
+)
 
 
 def parse_args(args=None):
@@ -82,7 +87,7 @@ def check_arg_specific_ip(string: str) -> str:
         string (str): Valid string in correct form
     """
     if len(string) > 17 or len(string) < 7 or not isinstance(string, str) or \
-            not re.search(const.REGEX_SPECIFIC_IP, string):
+            not re.search(REGEX_SPECIFIC_IP, string):
         raise argparse.ArgumentTypeError(
             'Not a valid IP address. Required to be in standard format X.X.X.X'
         )
@@ -99,7 +104,7 @@ def check_arg_scope_ip(string: str) -> str:
         string (str): Valid string in correct form
     """
     if len(string) > 17 or len(string) < 7 or not isinstance(string, str) or \
-            not re.search(const.REGEX_SCOPE_IP, string):
+            not re.search(REGEX_SCOPE_IP, string):
         raise argparse.ArgumentTypeError(
             'Not a valid IP address. Required to be in standard format X.X.X.X'
         )
@@ -135,7 +140,7 @@ def check_arg_mac(string: str) -> str:
         return string.lower()
 
     if len(string) > 17 or len(string) < 12 or not isinstance(string, str) or \
-            not re.search(const.REGEX_MAC, string):
+            not re.search(REGEX_MAC, string):
         raise argparse.ArgumentTypeError(
             'Not a valid MAC address. Required to be in a standard format '\
             'X:X:X:X:X:X or X-X-X-X-X-X or X.X.X'
@@ -153,11 +158,11 @@ def check_arg_iprotocol(string: str) -> int:
         value (int): Valid sex value of internet protocol
     """
     if len(string) > 5 or not isinstance(string, str) or \
-            string.lower() not in const.INTERNET_PROTOCOLS:
+            string.lower() not in INTERNET_PROTOCOLS:
         raise argparse.ArgumentTypeError(
             'Not a supported internet protocol input. Required to be IPv4, IPv6 or Jumbo'
         )
-    return const.INTERNET_PROTOCOLS_INFO[string.lower()]['value']
+    return INTERNET_PROTOCOLS_INFO[string.lower()]['value']
 
 
 def check_arg_tprotocol(string: str) -> int:
@@ -170,11 +175,11 @@ def check_arg_tprotocol(string: str) -> int:
         value (int): Valid hex value of transport protocol
     """
     if len(string) > 3 or not isinstance(string, str) or \
-            string.lower() not in const.TRANSPORT_PROTOCOLS:
+            string.lower() not in TRANSPORT_PROTOCOLS:
         raise argparse.ArgumentTypeError(
             'Not a supported transport protocol input. Required to be either UDP or TCP'
         )
-    return const.TRANSPORT_PROTOCOLS_INFO[string.lower()]['value']
+    return TRANSPORT_PROTOCOLS_INFO[string.lower()]['value']
 
 
 def check_arg_port(string: str) -> int:
@@ -193,7 +198,7 @@ def check_arg_port(string: str) -> int:
             'You must enter an integer for the port input.'
         ) from exception
     else:
-        if value < 1 or value > const.MAX_PORT:
+        if value < 1 or value > MAX_PORT:
             raise argparse.ArgumentTypeError(
                 'You must enter an integer between 0 and 65535 for the port input.'
             )
@@ -209,7 +214,7 @@ def check_arg_cast(string: str) -> str:
     Returns:
         str (str): Valid cast type option
     """
-    if not isinstance(string, str) or string.lower() not in const.CAST_TYPES:
+    if not isinstance(string, str) or string.lower() not in CAST_TYPES:
         raise argparse.ArgumentTypeError(
             'Not a supported cast type input. Required to be either unicast, multicast or broadcast'
         )

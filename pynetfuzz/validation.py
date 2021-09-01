@@ -7,15 +7,15 @@ from typing import TYPE_CHECKING, Union
 import re
 import sys
 # Package imports
-import exceptions as ex
-from const import (
+import pynetfuzz.exceptions as ex
+from .const import (
     REGEX_SPECIFIC_IP, REGEX_SCOPE_IP, REGEX_MAC,
     MAX_PORT, TRANSPORT_PROTOCOLS_INFO,
 )
 
 if TYPE_CHECKING:
-    from hosts import Host
-    from packet import PacketDetails
+    from .hosts import Host
+    from .packet import PacketDetails
 
 
 def valid_specific_ip(string: str, minimum: int=7, maximum: int= 17) -> str:
@@ -182,7 +182,7 @@ def valid_host(host: Host) -> Host:
     Returns:
         Host: Valid Host object
     """
-    from hosts import Host
+    from .hosts import Host
     if not isinstance(host, Host):
         raise ex.InvalidHostError(
             f'Must be Host class objects. Received: {host} type({type(host)}')
@@ -208,7 +208,7 @@ def valid_packet_details(details: PacketDetails, must_contain: list=None) -> Pac
     Returns:
         PacketDetails: Valid PacketDetails object
     """
-    from packet import PacketDetails
+    from .packet import PacketDetails
     if not must_contain:
         must_contain = ['int_protocol', 'trans_protocol', 'cast',
                         'vlan', 'headers', 'min_length', 'max_length']

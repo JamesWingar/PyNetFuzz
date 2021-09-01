@@ -5,11 +5,11 @@ Contains main run method and logging setup
 import logging
 import time
 # Package imports
-from arguments import Args
-from hosts import Host
-from packet_generator import packet_generator
-from packet import PacketDetails
-from const import LOGGING_FORMAT, LOGGING_LEVEL
+from .arguments import Args
+from .hosts import Host
+from .packet_generator import packet_generator
+from .packet import PacketDetails
+from .const import LOGGING_FORMAT, LOGGING_LEVEL
 
 
 def run(args: Args) -> None:

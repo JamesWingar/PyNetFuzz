@@ -4,11 +4,11 @@ Contains Generator function - packet generator
 #Python library imports
 import logging
 # Package imports
-from randomiser import Randomiser
-from packet import Packet, PacketDetails
-from hosts import Host
-from const import PACKETS_PER_SEED
-from validation import valid_packet_details
+from .randomiser import Randomiser
+from .packet import Packet, PacketDetails
+from .hosts import Host
+from .const import PACKETS_PER_SEED
+from .validation import valid_packet_details
 
 
 def packet_generator(target: Host, details: PacketDetails,
