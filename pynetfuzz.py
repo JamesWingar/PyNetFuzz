@@ -2,10 +2,9 @@
 """
 CLI run script
 """
-# Python library imports
-from arguments import parse_args
 # Package imports
-from run import run
+from pynetfuzz.arguments import parse_args
+from pynetfuzz.run import run
 
 
 def main():
