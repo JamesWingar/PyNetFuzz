@@ -23,7 +23,7 @@ def run(args: Args) -> None:
                 trans_protocol, cast, headers, vlan, min_length , max_length, seed
     """
     configure_logging()
-    logging.info("starting PynetFuzzing...")
+    logging.info("starting PyNetFuzzing...")
     target, source = Host(args.target_ip, args.target_mac, args.target_port), \
         Host(args.source_ip, args.source_mac, args.source_port)
     packet_details = PacketDetails({

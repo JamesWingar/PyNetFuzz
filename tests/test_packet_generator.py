@@ -1,14 +1,17 @@
+"""
+Unit tests for Packet Generator function
+"""
 import unittest
 
-from src import const
-import src.exceptions as ex
-
 # Module under test
-from src.packetGenerator import PacketGenerator
+from src.packet_generator import packet_generator
 
-
-# Testing the Host Class
-class TestArgumentParser(unittest.TestCase):
+# Testing the Packet Generator function
+class TestPacketGeneratorParser(unittest.TestCase):
+    """ Testing Packet Generator function"""
 
     def test_valid_parameters(self):
+        pass
+
+    def test_invalid_parameters(self):
         pass
