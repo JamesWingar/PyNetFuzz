@@ -28,9 +28,10 @@ class PacketDetails():
         Parameters:
             info (dict): dict containing packet required info
         """
-        self.info = valid_packet_info(info)
-        for key, value in info.items():
+        for key, value in valid_packet_info(info).items():
             setattr(self, key, value)
+            if key == "min_length":
+                setattr(self, key, 123)
 
     def get(self, attribute: str, default: Any=None) -> Any:
         """ Attempts to get the requested attribute
@@ -45,7 +46,10 @@ class PacketDetails():
         if not isinstance(attribute, str):
             raise TypeError(
                 f'Attribute given is not a string. Received: {attribute} ({type(attribute)})')
-        return getattr(self, attribute, default)
+        value = getattr(self, attribute)
+        if value is not None:
+            return value
+        return default
 
     def set(self, attribute: str, value: Any) -> Any:
         """ Attempts to set a attribute
@@ -61,7 +65,7 @@ class PacketDetails():
 
     def __str__(self) -> str:
         """Built-in str method"""
-        return "({})".format(",".join([f"{key}: {value}" for key, value in self.info.items()]))
+        return "({})".format(", ".join([f"{key}: {value}" for key, value in self.__dict__.items()]))
 
     def __repr__(self) -> str:
         """Built-in repr method"""
