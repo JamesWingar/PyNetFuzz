@@ -48,7 +48,7 @@ class Randomiser():
         Returns:
             str: Randomised MAC address string
         """
-        return '00:' + ':'.join([hex(self.bit_8()).lstrip('0x').upper() for octet in range(5)])
+        return '00:' + ':'.join([hex(self.bit_8())[2:].upper() for octet in range(5)])
 
     def port(self) -> int:
         """ Generate a randomised Port number
