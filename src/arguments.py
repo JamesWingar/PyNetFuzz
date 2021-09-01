@@ -260,3 +260,42 @@ def check_arg_packet_length_int(string):
                 'You must enter a positive integer between 48 and 9000'
             )
     return value
+
+
+class Args():
+    """ Argument Class to store run arguments"""
+
+    def __init__(self, **kwargs):
+        """ Host class built-in initialiser"""
+        self.target_ip = None
+        self.network_interface = None
+        self.n_packets = None
+        self.source_ip = None
+        self.target_mac = None
+        self.source_mac = None
+        self.target_port = None
+        self.source_port = None
+        self.int_protocol = None
+        self.trans_protocol = None
+        self.cast = None
+        self.headers = None
+        self.vlan = None
+        self.min_length = None 
+        self.max_length = None
+        self.seed = None
+
+        for key, value in kwargs:
+            if key in self.__dict__:
+                setattr(self, key, value)
+
+    def _dict(self) -> dict:
+        """ Method to output class attributes as a dictionary"""
+        return self.__dict__
+
+    def __str__(self) -> str:
+        """Built-in str method"""
+        return f"[{', '.join(f'{key}: {val}' for key, val in self.__dict__.items())}]"
+
+    def __repr__(self) -> str:
+        """Built-in repr method"""
+        return f"Object: {self.__class__.__name__} [{', '.join(list(self.__dict__.values()))}]"
