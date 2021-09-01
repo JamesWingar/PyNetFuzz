@@ -246,8 +246,7 @@ def valid_complete_packet_details(details: PacketDetails) -> PacketDetails:
         if int(details.get('trans_protocol')) == int(TRANSPORT_PROTOCOLS_INFO['tcp']['value']):
             must_contain.append('tcp_header')
 
-    must_contain_set = set(must_contain)
-    details_attr_set = set()
+    must_contain_set, details_attr_set = set(must_contain), set()
     for key in must_contain:
         if hasattr(details, key):
             details_attr_set.add(key)
