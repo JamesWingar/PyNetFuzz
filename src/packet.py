@@ -30,8 +30,6 @@ class PacketDetails():
         """
         for key, value in valid_packet_info(info).items():
             setattr(self, key, value)
-            if key == "min_length":
-                setattr(self, key, 123)
 
     def get(self, attribute: str, default: Any=None) -> Any:
         """ Attempts to get the requested attribute
@@ -65,7 +63,7 @@ class PacketDetails():
 
     def __str__(self) -> str:
         """Built-in str method"""
-        return "({})".format(", ".join([f"{key}: {value}" for key, value in self.__dict__.items()]))
+        return ", ".join([f"{key}: {value}" for key, value in self.__dict__.items()])
 
     def __repr__(self) -> str:
         """Built-in repr method"""
