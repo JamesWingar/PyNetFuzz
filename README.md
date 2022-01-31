@@ -1,4 +1,4 @@
-<h1 align="center"> PyNetFuzz </h1> <br>
+<h1 align="center"> PyNetFuzz</h1> <br>
 <p align="center">
   <a href="https://gitpoint.co/">
     <img alt="GitPoint" title="GitPoint" src="http://i.imgur.com/VShxJHs.png" width="450">
@@ -35,57 +35,84 @@
 ![License](https://img.shields.io/badge/license-MIT-lightgrey)
 
 ## Summary
+
 Package to create a Fuzz testing environment on a local network with randomised and configurable packet parameters.
 
 ---
+
 ## Contents
+
 * [About](#about)
-    * [Features](#features)
-    * [Technologies](#technologies)
+  * [Features](#features)
+  * [Technologies](#technologies)
 * [Setup](#setup)
 * [Usage](#usage)
-    * [CommandLine](#commandline)
-    * [Arguments](#arguments)
-    * [Install](#install)
+  * [CommandLine](#commandline)
+  * [Arguments](#arguments)
+  * [Install](#install)
 * [Project](#project)
-    * [Status](#status)
-    * [Todo](#todo)
-    * [Licence](#licence)
+  * [Status](#status)
+  * [Todo](#todo)
+  * [Licence](#licence)
 
 ---
+
 ## About
+
 ### Features
+
 Fully customisable packets and automated packet randomness:
+
 * Customisable MAC addresses endpoints (`Layer 2`), Network layer endpoints and protocols (`Layer 3`), Transport layer endpoints and protocols (`Layer 4`), Network cast communication, packet length and more.
 * Distinguishable `Source` and `Destination` addresses, ports and more.
 * Fully randomisable Ethernet frame structure and features
 * Random visible seed for repeatable packets and payloads
 
 ### Technologies
+
 * Python: 3.8+
 * scapy: 2.4.5
 * psutils: 5.8.0
 
 ---
+
 ## Setup
+
 Download and install package to Python environment
-```
+
+```CLI
 python -m setup
+```
 
 ---
+
 ## Usage
+
 ### Commandline
+
 * To be done
+
 ### Arguments
+
 * To be done
+
 ### Install
+
 * To be done
+
 ---
+
 ## Project
+
 ### Status
+
 * In development
+
 ### Todo
-- [ ] Add Jumbo frames
-- [ ] Improve performance
+
+* [ ] Add Jumbo frames
+* [ ] Improve performance
+
 ### Licence
+
 > License can be found [here](./LICENSE)
