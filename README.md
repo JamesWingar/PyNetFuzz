@@ -1,15 +1,12 @@
-<h1 align="center"> PyNetFuzz</h1>
+<h1 align="center">PyNetFuzz</h1>
+
+<p align="center">Package to create a Fuzz testing environment on a local network with randomised and configurable packet parameters.</p>
+
 <div align="center">
     <img alt="Version" title="Package Version" src="https://img.shields.io/badge/PyNetFuzz-v1.0.0-blue">
     <img alt="Version" title="Package Coverage" src="https://img.shields.io/badge/coverage-75%25-green">
     <img alt="Version" title="Package License" src="https://img.shields.io/badge/license-MIT-lightgrey">
 </div>
-
-## Summary
-
-Package to create a Fuzz testing environment on a local network with randomised and configurable packet parameters.
-
----
 
 ## Contents
 
