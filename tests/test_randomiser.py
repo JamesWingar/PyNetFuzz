@@ -32,36 +32,36 @@ class TestRandomiser(unittest.TestCase):
         # Random int (0-255) Sequence: 68 32 130 60 253 230 241 194
         seed = 1
         # Correct random IP generation
-        self.assertEqual(Randomiser(seed).ip("192.168.1.24"), "192.168.1.24")
-        self.assertEqual(Randomiser(seed).ip("192.168.1.*"), "192.168.1.68")
-        self.assertEqual(Randomiser(seed).ip("192.168.*.*"), "192.168.68.32")
-        self.assertEqual(Randomiser(seed).ip("192.*.*.*"), "192.68.32.130")
-        self.assertEqual(Randomiser(seed).ip("*.*.*.*"), "68.32.130.60")
-        self.assertEqual(Randomiser(seed).ip(), "68.32.130.60")
-        self.assertEqual(Randomiser(seed).ip(), Randomiser(seed).ip("*.*.*.*"))
+        self.assertEqual(Randomiser(seed).ipaddr("192.168.1.24"), "192.168.1.24")
+        self.assertEqual(Randomiser(seed).ipaddr("192.168.1.*"), "192.168.1.68")
+        self.assertEqual(Randomiser(seed).ipaddr("192.168.*.*"), "192.168.68.32")
+        self.assertEqual(Randomiser(seed).ipaddr("192.*.*.*"), "192.68.32.130")
+        self.assertEqual(Randomiser(seed).ipaddr("*.*.*.*"), "68.32.130.60")
+        self.assertEqual(Randomiser(seed).ipaddr(), "68.32.130.60")
+        self.assertEqual(Randomiser(seed).ipaddr(), Randomiser(seed).ipaddr("*.*.*.*"))
 
-    def test_invalid_ip(self):
-        """ Test invalid ip randomise method"""
+    def test_invalid_ipaddr(self):
+        """ Test invalid ipaddr randomise method"""
         # Random int (0-255) Sequence: 68 32 130 60 253 230 241 194
         seed = 1
         # Incorrect argument datatype tests
         with self.assertRaises(ex.IpAddressInvalidTypeError):
-            Randomiser(seed).ip(1)
+            Randomiser(seed).ipaddr(1)
         with self.assertRaises(ex.IpAddressInvalidTypeError):
-            Randomiser(seed).ip(123.456)
+            Randomiser(seed).ipaddr(123.456)
         with self.assertRaises(ex.IpAddressInvalidTypeError):
-            Randomiser(seed).ip(False)
+            Randomiser(seed).ipaddr(False)
         # Incorrect String Form tests
         with self.assertRaises(ex.IpScopeAddressInvalidFormatError):
-            Randomiser(seed).ip("Marilyn Monroe")
+            Randomiser(seed).ipaddr("Marilyn Monroe")
         with self.assertRaises(ex.IpScopeAddressInvalidFormatError):
-            Randomiser(seed).ip("123-123.123.123")
+            Randomiser(seed).ipaddr("123-123.123.123")
         with self.assertRaises(ex.IpScopeAddressInvalidFormatError):
-            Randomiser(seed).ip("58.129.245")
+            Randomiser(seed).ipaddr("58.129.245")
         with self.assertRaises(ex.IpScopeAddressInvalidFormatError):
-            Randomiser(seed).ip("198.63.154.256")
+            Randomiser(seed).ipaddr("198.63.154.256")
         with self.assertRaises(ex.IpAddressTooLongValueError):
-            Randomiser(seed).ip("39wrnvkdsnv.4903wr.fosief.309")
+            Randomiser(seed).ipaddr("39wrnvkdsnv.4903wr.fosief.309")
 
     def test_mac(self):
         """ Test mac address randomise method"""

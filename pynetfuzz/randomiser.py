@@ -30,7 +30,7 @@ class Randomiser():
         self.seed = valid_seed(seed)
         random.seed(seed)
 
-    def ip(self, ip_str: str='*.*.*.*') -> str:
+    def ipaddr(self, ip_str: str='*.*.*.*') -> str:
         """ Generate a randomised IP address string
 
         Parameters:
@@ -68,7 +68,7 @@ class Randomiser():
         Returns:
             random_host: Randomised Host object
         """
-        random_host.ip = self.ip(host.ip) if host.is_ip() else self.ip()
+        random_host.ip = self.ipaddr(host.ip) if host.is_ip() else self.ipaddr()
         if not host.is_mac():
             random_host.mac = self.mac()
         if not host.is_port():
