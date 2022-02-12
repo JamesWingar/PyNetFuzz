@@ -1,38 +1,9 @@
-<h1 align="center"> PyNetFuzz</h1> <br>
-<p align="center">
-  <a href="https://gitpoint.co/">
-    <img alt="GitPoint" title="GitPoint" src="http://i.imgur.com/VShxJHs.png" width="450">
-  </a>
-</p>
-
-<p align="center">
-  GitHub in your pocket. Built with React Native.
-</p>
-
-<p align="center">
-  <a href="https://itunes.apple.com/us/app/gitpoint/id1251245162?mt=8">
-    <img alt="Download on the App Store" title="App Store" src="http://i.imgur.com/0n2zqHD.png" width="140">
-  </a>
-
-  <a href="https://play.google.com/store/apps/details?id=com.gitpoint">
-    <img alt="Get it on Google Play" title="Google Play" src="http://i.imgur.com/mtGRPuM.png" width="140">
-  </a>
-</p>
-<p align="center">
-    <a>
-    <img alt="Version" title="Package Version" src="https://img.shields.io/badge/PyNetFuzz-v1.0.0-blue" width="120">
-    </a>
-    <a>
-    <img alt="Version" title="Package Coverage" src="https://img.shields.io/badge/coverage-75%25-green" width="120">
-    </a>
-    <a>
-    <img alt="Version" title="Package License" src="https://img.shields.io/badge/license-MIT-lightgrey" width="120">
-    </a>
-</p>
-
-![Version](https://img.shields.io/badge/PyNetFuzz-v1.0.0-blue)
-![Coverage](https://img.shields.io/badge/coverage-75%25-green)
-![License](https://img.shields.io/badge/license-MIT-lightgrey)
+<h1 align="center"> PyNetFuzz</h1>
+<div align="center">
+    <img alt="Version" title="Package Version" src="https://img.shields.io/badge/PyNetFuzz-v1.0.0-blue">
+    <img alt="Version" title="Package Coverage" src="https://img.shields.io/badge/coverage-75%25-green">
+    <img alt="Version" title="Package License" src="https://img.shields.io/badge/license-MIT-lightgrey">
+</div>
 
 ## Summary
 
@@ -81,7 +52,7 @@ Fully customisable packets and automated packet randomness:
 Download and install package to Python environment
 
 ```CLI
-python -m setup
+python setup.py install
 ```
 
 ---
@@ -90,15 +61,33 @@ python -m setup
 
 ### Commandline
 
-* To be done
+```CLI
+python pynetfuzz.py <Target IP> <Network interface> <N packets> [source_ip] [target_mac] [source_mac] [target_port] [source_port] [int_protocol] [trans_protocol] [cast] [headers] [vlan] [min_packet] [max_packet] [seed]
+```
 
 ### Arguments
 
-* To be done
+```CLI
+Positional arguments
+target_ip (str): IP address of target on network
+network_interface (str): Name of the interface connected to the local network
+n_packets (int): Number of packets to be sent
 
-### Install
-
-* To be done
+Optional arguments
+source_ip [-sip]  IP address of source on network (default: Random)
+target_mac [-tm]  MAC address of target on network [Self / valid MAC address] (default: Random)
+source_mac [-sm]  MAC address of source on network [Self / valid MAC address] (default: Random)
+target_port [-t_p]  Port of target on network (default: Random)
+source_port [-s_p]  Port of source on network (default: Random)
+int_protocol [-ip]  Specify the internet protocol [IPv4 / IPv6] (default: Random)
+trans_protocol [-tp]  Specify the transport protocol [TCP / UDP] (default: Random)
+cast [-c]  Specify cast types [unicast / multicast / broadcast] (default: Random)
+headers [-hd]  Disable randomised headers (default: Random)
+vlan [-vl]  Adds vlan tag
+min_length [-min]  Specify minimum packet length (default: Ethertype minimum)
+max_length [-max]  Specify maximum packet length (default: Ethertype maximum)
+seed [-s]  Specify seed to generate packets (default: Random seed)
+```
 
 ---
 
