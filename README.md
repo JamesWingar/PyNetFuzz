@@ -17,7 +17,6 @@
 * [Usage](#usage)
   * [CommandLine](#commandline)
   * [Arguments](#arguments)
-  * [Install](#install)
 * [Project](#project)
   * [Status](#status)
   * [Todo](#todo)
